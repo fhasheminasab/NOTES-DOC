@@ -1,0 +1,34 @@
+we declar variables using "var".
+----------------------------
+when we write the code in multiple files, before being able to import one into another, we first have to export functions to make them public:
+	module.exports.a_new_or_same_name = function_name;
+or you can do this and ultimately export a function instead of n object:
+	module.exports = function_name;
+----------------------------
+instead of "import" we do (it returns things):
+	var something = require('./the-file-in-the-same-folder.js');
+or:
+	var something = require('./the-file-in-the-same-folder');
+it's better to store it in a constant ("const" instead of "var")
+and we use it like:
+	something.a_function_from_it(stuff);
+----------------------------
+
+----------------------------
+
+----------------------------
+
+----------------------------
+
+----------------------------
+
+----------------------------
+
+----------------------------
+
+----------------------------
+
+----------------------------
+Helpful links:
+
+RESTful: https://www.youtube.com/watch?v=pKd0Rpw7O48

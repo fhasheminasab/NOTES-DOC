@@ -1,0 +1,112 @@
+inside your microservice:
+-on its main folder click add new project and select class library, name it and save it inside this main folder. do this 3 times with names like this (These are project layers):
+	-MyMicroService.Domain
+	-MyMicroService.Application
+	-MyMicroService.infrastructure
+-then edit the dependencies:
+	-MyMicroService.API (the main app): Application & Infrastructure
+	-Infrastructure: Application
+	-Application: Domain
+//-------------
+//DOMAIN:
+-inside the domain project create a folder named "Common", this folder will be used by all entities.
+-inside common create a "EntityBase" class : it's a class with attributes that all entities are expected to share(have) them.
+-inside common create a "ValueObject" class: it includes methods that simplify operations. (just copy the shits from another project)
+-inside domain create an "Entities" folder. here define all the entities and make each inherit "EntityBase".
+//---------------
+//APPLICATION:
+inside it create these 3 folders:
+	-Contracts:
+		-covers app capabalities
+		-inclides interfaces for abstracting UseCase implementation
+		-we will store all the abstraction interfaces here
+	-Features:
+		-applies CQRS design pattern to handle business usecases
+	-Behaviours:
+		-behaviours like validation, login,...
+----Contracts:
+-inside it create a "Persistance" subfolder: it will cover repository interfaces.
+-inside "Persistance" create a "IAsyncRepository.cs": it's an interface that can be inherited by other repo interfaces, it takes any Entity(model) as a Generic.
+
+
+
+
+
+
+
+
+
+
+
+ADDING NEW USECASES:
+-first I add the controller,
+-then I add the Irepository,
+-then add the repository
+-then I add them to InfrastructureServiceRegistration (inject the dependency)
+-then add the viewModel (Dto)
+-then add mapping profiles
+-then I add the usecase inside
+
+
+DATABASE RELATIONSHIPS:
+-under the .Infrastructure layer create a "Mappings" folder.
+-inside ir create a class that implements "IEntityTypeConfiguration<YOURENITITY>"
+-you need to create such a class for each of your entities.
+-after implementing that class you inherited, inside the "Configure" method add the relationship rules.
+-here are examples:
+	//A company has many employees, each with one company. That relationship is represented as follows:
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
+	{
+	    modelBuilder.Entity<Company>()
+	        .HasMany(c => c.Employees)
+	        .WithOne(e => e.Company);
+	}
+
+MIGRATION:
+-make sure to have installed "Microsoft.EntityFrameworkCore.Tools" on the .API and
+"Microsoft.EntityFrameworkCore.SqlServer" on the .Infrastructure layer.
+-set the connection string in appsettings.json
+-open "Microsoft SQL server management studio" and create the database manually.
+-open Package Mnager console on the .Infrastructure layer:
+	Add-Migration InitialCreate
+
+TESTING:
+-add a test file for each usecase
+-add a test file for each repositoriey
+-and inside them, add a setup to represent each method in that repository
+
+
+----Errors:
+	UnhandledExceptionBehaviour
+	:
+
+	add this:
+		where TRequest : MediatR.IRequest<TResponse>
+	so it will look like this:
+		public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : MediatR.IRequest<TResponse>
+--------------
+use "Configuration" in .NET6:
+use "builder.Configuration" insted.
+--------------
+if you're inserting null values in db you have to add "?" after the data types of the stuff you want to make nullable.
+if it didn't work (string is nullable by default but it still may not work), you have to open up the project.cs and comment that nullable line
+--------------
+I had this problem with recieving stuff from controller:
+solution: the "fullName"s in the below code should all be the same
+
+	[HttpGet("{fullName}", Name = "GetEmployeeByName")]
+    [ProducesResponseType(typeof(IEnumerable<EmployeeVm>), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<IEnumerable<EmployeeVm>>> GetEmployeesByFullName(string fullName)
+    {
+        var query = new GetEmployeesByNametQuery(fullName);
+        var employees = await _mediator.Send(query);
+        return Ok(employees);
+    }
+--------------
+Whenever you wanna change the project name (rename),
+-rename everything in the explorer
+-rename everything using find on "Entire solution"
+-close everything and rename every file on the project (using "SublimeText")
+-delete everything that couldnt be renamed (using "Everything") before and after openng the project
+ remember to right click on the solution and "sync namespaces" and then add references all over again
+--------------

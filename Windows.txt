@@ -1,0 +1,2 @@
+install old software that doesn't work on the newest windows:
+	https://answers.microsoft.com/en-us/windows/forum/all/how-to-install-devices-software-from-older-windows/c19bee9c-431f-46e2-85f1-6ab90304d278?auth=1

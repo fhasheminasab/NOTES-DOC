@@ -1,0 +1,27 @@
+-Virtualized Physical description:
+	+Win7: 2GB RAM, 70GB Memmory, Bridged Network adaptor with physical replication
+	+WinServer: 1GB RAM, 40GB Memmory, 2 Network adaptors one Bridged with physical replication, th other Custom(VMnet2)
+-Network and connection status:
+	+On the host laptop we have "VMnet8", "VMnet2" and "Ethernet2"(the virtual hardware that we've created through "Run\hdwwiz") bridged into "Ethernet3"(192.168.110.3)
+	+In the VMware software we have VMnet2(NAT:192.168.110.0) and VMnet8(Host-Only:192.168.150.0)(default)
+	+In the Win7 OS we have "Local area connection" with dynamic IP
+	+In the WinServer OS we have "Local area connection"(192.168.110.50 ,Default Gateway:192.168.110.1) which seems to be the host's "Ethernet" and "Local area connection 2" (192.168.110.51) that probably is host's "Ethernet 3"
+
+-Before doing anything we set an static IP Address for the win server (192.168.110.50)
+-after installing the WinServer from .iso into a VM, start with installing the Active Directory service through "Server manager\Add role" or by simply using the Run command "dcpromo.exe"(which starts installing AD if not alredy there, and uninstalling if it is), it is then automatically followed by installing the DNS server
+-Through the process above you have declared a domain name (SOMETHING.COM) and a Password(in this case: 123456)(the username is "Administrator").
+-Now a reboot and Entering the new domain using your new user pass.
+-Start installing the DHCP Server (it is responsible for giving out IPs to joining computers)(192.168.110.50 and 192.168.110.49(no imp) Gateway:192.168.110.1 Scope:192.168.110.2 to 192.168.110.100) through "Add role", then "Authorize" it through "Server Manager\Roles\DHCP Server\win-8x...\Action\Authorize"
+-Now turn on your Win7 to join the domain through "Control pannel\System\Change settings\Computer name\Change\Domain", since in order to join a domain someone needs to refer you to it, you will be asked to enter the domain with already existing credentials of your choosing (here it will be your WinServer user pass)
+-After that you'll reboot and enter your new system With your old user pass for the Win7 (in this case:123h567/)
+-you should be connected to the domain now, and to check that you should be able to see the domain name on the connection down there.
+-to check if the DHCP is working properly you can use ipconfig cmd Commands (ipconfig/renew)
+
+*Default gateways are all the same here: 192.168.110.50 (Our server IP)
+*access VM connections to host laptop through Edit from the top menu
+*send in Ctrl+Alt+Del through VM from the top menu
+*access Networks and Connections through "Network and sharing center\Change adaptor settings" ("Manage Network Connections" instead of "change adap..." in WinServer)
+*If the computer won't join domain, try fludhing DNS cache:
+Run ipconfig /flushdns, ipconfig /registerdns and dcdiag /fix.
+*To join a domain, for the username you go like: SOMETHING.COM\administorator
+*While loging in on a domain joined computer, if you switch users and instead of typing in the domain name or local computer name initially, you go ahead and type the username, it will automatically log in on the previous, meaning if you last loged in on the domain, you'll be loging in on the domain now also.

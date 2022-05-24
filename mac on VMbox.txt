@@ -1,0 +1,19 @@
+Opne VMbox, click "new" and then type in "Mavericks", then from the drop bar select "Mac OS X(64Bit)", we're gonna create a new virtual disk, 20GB would be fine
+Go to settings and expand "System", then uncheck "Enable EFI..." and "Hardware Clock..."
+Go to "Storage", click on "Empty" and then from the disk icon click on "Choose a Virtual CD?DVD..." and then browse through the ISO.
+close VMbox.
+From CMD go to "D:\Program Files\oracle\virtualbox" then run (instead of "vmname" type in "Mavericks" or whatever):
+VBoxManage modifyvm "vmname" --cpuidset 00000001 000306a9 00020800 80000201 178bfbff
+
+(u actually do: VBoxManage modifyvm mavericks --cpuidset 00000001 000306a9 00020800 80000201 178bfbff)
+
+
+
+
+
+
+*you may wanna ckeck for currupted DLL files using: sfc /scannow
+
+
+
+

@@ -1,0 +1,37 @@
+unit testing with xunit c#:
+-------------
+to mock interfaces:
+	-add "moq" package
+	-create a moq object outside the test case (inside test class):
+		 public Mock<ICustomerContext> mock_ICustomerContext = new Mock<ICustomerContext>();
+	-tell the mock what it should be returning:
+		mock_ICustomerContext.Setup(m => m.Customers).Returns(_customerContext.Customers);
+	-now use the mocked iterface:
+		var expectedCustomers = await mock_ICustomerContext.Object.Customers.Find(c => true).ToListAsync();
+-------------
+reminders:
+-You need to test for all return types
+-don't forget to get docker running
+-nCrunsh is shit
+
+-------------
+in each test class, first the constructor, then the test, and then the Dispose method will be called.
+it will be called after each test case in the class is run, for teardown perposes:
+	public void Dispose()
+	{
+		//teardown code	
+	}
+
+
+--------------------------------
+Never test already tested tools:
+	don't validate wether a link works correctly
+	don't validate wether a query is sorted
+	don't validate wether a function that you haven't written works
+	validate your business logic
+	validate 
+
+------------------------
+if you dont want tests to run in parralel use "Collection":
+put this before all the test class you don't want to be run parralelly:
+	[Collection("Do not run in parallel!")]

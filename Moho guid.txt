@@ -1,0 +1,59 @@
+u can access the "introductory tutorial" pdf with one click on the startup page.
+
+-When drawing in illustrator for moho, do not group things inside a character!!! and only group characters
+
+-import from illustrator correctly:
+Go to AI and export it as PSD:
+first make sure you've ungroups some stuff
+File>Export>Export as> .psd
+change resolution to your desire (150ppi,RGB, ),
+and make sure "write layers" is selected and "Embed ICC profile" is checked.
+
+
+-use vector layers to draw stuff.
+-to change the stlye of the things u drew, u first need to select them using tools > fill > select shape.
+-it's possible to have costume swatches.
+-while drawing the "Auto-Weld" checkbox makes sure everything u draw gets closed.
+-tools > draw > curvature : change corners
+-hold SHIFT down to draw perfectly evenend out shapes
+-hold ALT down to maek the start point of the mouse drawing to be the center of the shape. (otherwise the start point would be the edge of the shape and the center would change)
+-noise settings: double click a layer, "layer settings" would open, look in "vectors" tab
+-file > project settings : Dimentions, Render style
+------------------------------------------------------------------------------
+-"MohoPart4[schoolgraphic.ir].mp4" makes some demonstrations about animating:
+	-there is an inputbox down there titled "Frame" and it's set to "0", change that to when you want your next key frame to be, then change whatever you want up there in the project, it will automatically animate the change.
+	-u can right click on keyframe dots to change the animation style.
+	recomanded: Ease In/Out
+------------------------------------------------------------------------------
+-move camera: tools > camera > Track camera : chose it, make a key frame, move the main big rectangle up there.
+------------------------------------------------------------------------------
+-import frrom photoshop: fie > import > general import
+------------------------------------------------------------------------------
+-Bones: To be able to add bones create a bone layer then subset the layer (the one you want to add bones to) to the bone layer. the go ahead and add bones frome the tools bar.
+-u need one bone layer for each i.e. character.
+-after placing bones u need to connect relevent bones together "tools > bone > reparent bone"
+
+-u can change "bone strength"
+-you can flex shapes using bones (tools > manipulate bones)
+-the more points a shape has, the better it will animate bending.
+-after placing all the bones, we need to assciate eachbone with a layer. to do so, we select the layer of interest then select tools > bone > Bind Layer then select the bone of interest.
+------------------------------------------------------------------------------
+-Particle: to simulate stuff like rain and where we dont want to draw a thousand instances of one object, we create a particle layer and we subset its shape ti it, then we manipulate it under "particle options"
+
+------------------------------------------------------------------------------
+Types of Bone rigging when we have different layers for 1 character:
+1-point binding: select the "Bone strength" tool and reduce each bone influence to zero, click on the desired layer, click on the "bone select"(B) tool, select the desired (related) bone, click on the "Bind points"(i) tool, select the desired (related) points,(dont select all the points of the desired shape )
+2-Area Binding: just drawing bones and nothing else. (Flexible binding)
+ -smother: double click on the bone layer, go to bone tab, select Region Binding.
+3-Layer binding: click on the layer then click on "Bind Layer" on the left toolbox, and then click on the desired bone(that belongs to this layer)
+
+
+-when selecting points, u can check "Lasso mode" to enable you to draw around points to sellect them.
+------------------------------------------------------------------------------
+Bone rigging: 
+-start with the heap bone and draw it horizantally from left to right then start drawing other bones. (draw this heap bone even if there is no heap)
+-The start point (fat part) is connected to where the bone relys on.
+-Bones don't have to line up.
+-while drawing bones for examble if you want all of them to be directely connected to heap, after drawing each one seect the heap bone and then draw a new one (bones automatically get connected to the last selected bone)
+-if you want the bones to be connected correctly hold down the "Alt" key and draw bones respectedly.(heap to neck, release, arm to fingers release,...)
+-2for each hand, 2 for each leg, 4 for body (heap, waist, neck, head)

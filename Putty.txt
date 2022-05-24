@@ -1,0 +1,16 @@
+when the program starts in configuration in the "Hostname(IP address)" section type in the destinations IP address, (192.168.43.205 in my case)
+
+
+connect to GUI by installing VNC Server on the target computer (my case: PC name: "Hashem's PC", password: "13760431hH" but the raspberry's was "pi"and"12345678") and VNC viewr( in my case for the raspberry: 192.168.43.205:5901) on your own pc.
+
+for usb connection through putty set "Connection Type" to "Serial", and "speed" to "105200" instead of "9600" and lookup the COM port number in device manager (in my case "COM8")
+
+
+if you run into problems executing commands using ssh, such as:
+	cv2.error: OpenCV(4.5.3) /tmp/pip-wheel-pd499c9i/opencv-python_3a15e83eee864e65b7311a199a94e9f1/opencv/modules/highgui/src/window_gtk.cpp:635: error: (-2:Unspecified error) Can't initialize GTK backend in function 'cvInitSystem'
+try these:
+	sudo apt-get update
+	sudo apt-get install gtk
+then you probably need to set up an X Server using something like Cygwin, here's the full tutorial:
+	https://www.youtube.com/watch?v=RAUyXMqHYLE
+	it says there that you install the app, click all, click X11, make sure to check "Xhost" and "Xterm". then open the app and type "startx"

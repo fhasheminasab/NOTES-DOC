@@ -1,0 +1,54 @@
+******************Connections*******************
+ditch sanctions (not filtering):
+	shecan.ir
+	or just set the DNSs on:
+	826-586-2699	&	185.51.200.2
+	or:
+	178.22.122.100	&	185.51.200.2
+		(THIS IS FUCKING AWESOME!)
+		
+****************************************************
+Create UI Prototypes and Wireframes:
+
+	https://app.moqups.com/
+
+draw Diagrams and Flowcharts and stuff:
+
+	draw.io
+
+Create a Customer Persona:
+
+	https://www.hubspot.com/make-my-persona
+
+
+*********************Document Help*******************
+Edit PDF (Online):
+	https://smallpdf.com/edit-pdf
+
+Online Flowchart:
+	https://www.draw.io
+
+Merge PDFs:
+	https://www.pdfmerge.com/
+
+Colored Code for word!:
+	http://hilite.me/
+	http://www.planetb.ca/syntax-highlight-word
+	http://markup.su/highlighter/
+
+Convert Images to Ascii Art:
+	https://manytools.org/hacker-tools/convert-images-to-ascii-art/
+
+*************writing (English) help********************
+
+find some phrase in famous txt instances:
+	https://ludwig.guru/
+
+*************Programming (LEARN)***********************
+last minute notes(on various subjects):
+https://www.geeksforgeeks.org/lmns-gq/
+
+
+****************Edit Video**************************
+add audio and everything
+https://www.media.io/editor/add-audio-to-video.html

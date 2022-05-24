@@ -1,0 +1,26 @@
+-using a multimeter always start with the higher range (to avoid damaging it)
+
+-when a resistor burns out it becomes an open circuit.
+
+-if there are two diods in a parallel circuit, like a silicon diod (0.7v) and a germanium diod (0.3v), the current will flow through the one that requires less voltage, in this case it will flow through the germanuim diod (on), and the silicon diod will be off (open circuit).
+
+
+-too much base current can destroy a transistor
+-in a transistor to get the maximum benefit of it you want VCE to be half the collector supply voltage. (midpoint bias) and IC be the half of the saturation current to make the best amplifier.
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------
+
+they make ICs and gates:
+texas instrument
+national semi conductor
+toshiba
+AllDataSheet.com

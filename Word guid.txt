@@ -1,0 +1,7 @@
+-How to Add Half-Space:
+	u need to click "Insert>Symbols>More Symbols...>Special Characters". Then select "No-Width Optional Break", then click on "Shortcut Key...", and then enter your desired shortcut.
+
+-How To start page numbering from a different page (page 3):
+	First number the pages. Then go to the page before the ones you want numbered (page 2) and click "Layout>Breaks>Next Page". Then go to the first page you want numbered (page 3) and double click on then footer and unclick "Link to previous", then click "Page Number>Format Page Numbers..." then from the page numbering section, do "start at: 1". Then you can manually delete the number of the previous pages (1&2) without the whole thing being deleted.
+
+-

@@ -1,0 +1,17 @@
+
+-------------------------
+::before / ::after
+	it gives the element children:
+	.html file:
+		<q>Some quotes</q>
+	.css file:
+		q::before {
+		  content: "«";
+		}
+
+		q::after {
+		  content: "»";
+		}
+	result:
+		«Some quotes»
+-------------------------

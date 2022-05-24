@@ -1,0 +1,1259 @@
+
+*******************************Links**********************************
+redy to use widgets:
+  https://bestflutterpack.com/
+  https://fluttergems.dev/
+  https://dev.to/getwidget/
+*****************************Magnets**********************************
+
+https://p30download.ir/fa/entry/82156/
+magnet:?xt=urn:btih:0464c00780e5d82de183cbfd8aa018a0e9d4d022&dn=Udemy+-+Dart+and+Flutter%3A+The+Complete+Developer%27s+Guide&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Fzer0day.ch%3A1337&tr=udp%3A%2F%2Fopen.demonii.com%3A1337&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fexodus.desync.com%3A6969
+
+*******************************TODO***************************************
+
+go to this website and learn how to use this:
+https://flutterawesome.com/fluid-layouts-allows-you-to-create-responsive-layout-for-mobile-web-and-desktop/
+--------------------------------------------------------------------------
+why are apks so big? (cuz it's debug):
+https://github.com/flutter/flutter/issues/47101#issuecomment-567522077
+
+https://github.com/flutter/flutter/issues/12456
+https://flutter.dev/docs/resources/faq#how-big-is-the-flutter-engine
+--------------------------------------------------------------------------
+add Google fonts to flutter:
+https://pub.dev/packages/google_fonts
+
+
+*******************Installation Guid (AS+flutter)*************************
+
+HOW TO SET IT UP:
+
+{{
+
+-You better visit "fluter.io > Docs" and follow steps from there
+
+-first you need to install JDK8 and Android Studio, then install required SDKs.
+-Now you need to add the paths. go to "Environment variables" and in the "USer variables" section Click "New" and create a variable named "JAVA_HOME" and place the JDK installation path as its value (something like:"C:\Program Files\Java\jdk1.8.0_231"), then Do the same for where you're gonna install Android SDK with the name "ANDROID_HOME" (with the value of "C:\Users\fayem\AppData\Local\Android\Sdk").
+-Just to be safe, in the "System variables" section add the JDK installation path\bin to the "Path" variable.
+-Don't bother installing off-line SDKs, (trouble!) just turn on a good proxy, not just a VPN, a good fucking PROXY! "Next VPN" or "Hotspot shield" would do, but the best option is to use DNSs from "Shecan.ir". Then run android studio, it'll try to download stuff itself, Let it.
+-Then find the "Plugins" section in Android Studio and install "Flutter" plugin from there.
+-Then you need to install flutter from the original website and follow instructions from there.
+-You will be downloading a .zip file that needs to be extracted at a folder like "c:\src" (do not pick "program files" for the required permissions to access it will cause problems.). it contains a folder named flutter in which there's a "bin" folder, get inside it, copy the address and add it to the "Path" variable in "User variables".
+-Now when you type "flutter" in the cmd you'll get stuff.
+-To find out what else you need to install, type "flutter doctor" in cmd. (You might get "Android licenses not accepted.", do as it says and it'll be ok.)
+-Go to the SDK and stuff installation directory > platform-tolls and add the address to the "Path" values in "User variables" (Spmething like: "C:\Users\fayem\AppData\Local\Android\Sdk\platform-tools"). You're doing this to add the "adb".
+-
+    ****
+
+-Open android studio then find SDK Manager. In the "SDK Platforms" check show package details, then go find the Android version you'd like and download these (i.e. 7) from there (by download I mean check it and hit apply):
+  "Google APIs"
+  "Android SDK Platform"
+  "Intel x86 Atom_64 System Image"
+  "Google APIs Intel x86 Atom_64 System Image"
+These require high connection speed and use up lot's of data, and since the download process can't be paused, make sure you have a high speed steady connection using a good Proxy that don't have daily data limits (you can still use HSS though, it's still good after you pass the data limit.) I hotspoted my phone's data connection for this. (was the only way for me.)
+
+}}
+
+in case you need to address flutter SDK:
+C:\src\flutter
+
+
+----------------------------------------------------------------------------------
+
+-To create a new project open a command prompt and navigate to the directory you want your project in, then type "flutter create yourAppName". that's all.
+
+----------------------------------------------------------------------------------
+
+FireBase:
+log in with your google account, create a project, click on develop, click on database, and scroll the page down where it says "Realtime Database", and hit "Create Database", select "Start in test mode" and hit "Enable". it'll give you your URL.
+
+to use authentication, on firebase, first go to "database" then "rules", change those two "true"s to ""auth!=null"":
+
+{
+  "rules": {
+    ".read": "auth!=null",
+    ".write": "auth!=null"
+  }
+}
+
+publish it then click on the "Authentication" tab and then click "Sign up Sign-in method" and then chose a method and click on it, like "Email/Password", switch "Enable" and save.
+
+google "firebase auth REST api", go to "Sign up with email / password" and get the link under "endpoint", something like this:
+https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=[API_KEY]
+
+and then go to firebase click on the settings icon and then "project settings" and copy the "web API key" and replace "[API_KEY]" in the url with it. Mine was "AIzaSyA6uq-Y9sgL6P35AE8ay8PP4jcpUFRt7Bw" so the url was:
+  const url = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyA6uq-Y9sgL6P35AE8ay8PP4jcpUFRt7Bw';
+
+and it's the same for "sign in" and other stuff
+-------------------------------------------------------------------------------
+
+to get queries from firebase do like this:
+
+    var url =
+        'https://flutter-update-cc224.firebaseio.com/products.json?auth=$authToken&orderBy"creatorId"&equalTo="$userId"';
+        // &orderBy"creatorId"&equalTo="$userId" tells firebase that u wanna 
+        // filter by "creatorId" and only get words equal to "userId"
+and then go to "Database">"rules" and after "read" and "write" type:
+
+  "products":{
+    ".indexOn":["creatorId"]
+  }
+and then publish it.
+-------------------------------------------------------------------------------
+
+******************************Resources************************************
+
+Connect to the Internet using Hotspot shield or use shecan.ir DNS IPs.
+--------------------------------------------------------------------------
+Online Dart IDE (Needs VPN):
+dartpad.dartlang.org
+--------------------------------------------------------------------------
+
+*******************************Syntax*************************************
+
+-If you put an underscore (_) in the beginning of the name of a class, variable or a function, it'll make it a private class (only accessible within the dart file)
+
+-difference between "final" and "const":
+we use "final" if a value doesn't change strting from when the program runs, but it can be initialized with a value but don't change after that, (so it's a "run time" constant), but a "const" variable is initialized within the code (a "compile time" constant). (if by the time you're righting the code, you know the value exactly and know it's not gonna change, it's a "const", like the pi number)
+--------------------------------------------------------------------------
+Keys: (used when we mess with [stateful widget]&&[initState()])
+sometimes in a list if you delete the widget of an item its state doesn't get deleted and it gets associated with the next item and ruin your app, to prevent that, we can associate a unique key to each item of that list (if it is stateful, obviously, cuz otherwise there is no state to get mixed up, so no need for any key).
+we do this mostly when we do something to the initState() method.
+and this is how it's implemented:
+
+//this is the list, and how we pass the key:
+
+          ListView(
+            children: transactions
+                .map((tx) => TransactionItem(
+                      key: ValueKey(tx.id), //this is the only line we add
+                      //ValueKey(tx.id) is provided by flutter, 
+                      //and it provides unique keys for each id:D
+                      transaction: tx,
+                      deleteTx: deleteTx,
+                    ))
+                .toList(),
+          )
+
+//Now we need to add two pieces of code to the constructor of each item,
+//so this is how you accept the key:
+
+  const TransactionItem({ 
+    Key key,  //add this
+    @required this.transaction,
+    @required this.deleteTx,
+  }) : super(key: key);  //and this
+
+
+*keep in mind that you need to add the key on the direct child of your list.
+
+*there is "UniqueKey()" to be used instead of "ValueKey(id)", but it changes every time that main widget gets rebuilt.
+
+//here's an example of why we'd need these keys:
+//we added this to the item widget:
+
+  @override
+  void initState() {
+    const availableColors = [
+      Colors.red,
+      Colors.black,
+      Colors.blue,
+      Colors.purple,
+    ];
+
+    _bgColor = availableColors[Random().nextInt(4)];
+    super.initState();
+  }
+ //and used _bgColor as each widgets bg color, so they'd get random colors. but with each state change, the bg of the elements would change, unless we gave them keys.
+--------------------------------------------------------------------------
+Life Cycle State:
+
+we have three (3) important lifeCycle states that an app can be in:
+inactive, paused, resumed
+
+to observe which state your app is in, you need to add something to your state, like this:
+
+  class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
+
+and then you can add these inside your state to see what's happening:
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addObserver(this);// with this line:
+    //you're telling flutter whenever my lifeCycle changes,
+    //go to the "addObserver" observer and call 
+    //the didChangeAppLifecycleState, that we have below
+    super.initState();
+  }
+
+//this will be called whenever your app's lifeCycle changes: 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print(state);
+  }
+
+  @override
+  dispose() { 
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+--------------------------------------------------------------------------
+Enums: (for fucks sake)
+
+define them like this, outside classes:
+
+enum Complexity {
+  Simple,
+  Challenging,
+  Hard,
+}
+
+allocate them like this:
+
+final Complexity comp;
+
+and use them like this:
+
+complexityOfX = comp.Simple;
+--------------------------------------------------------------------------
+someList.indexWhere(sth)// this checks if a certain element is part of a list or not, and returns the index of it.
+--------------------------------------------------------------------------
+
+".." the cascade operator:
+  if u place it before calling a function, it does not return it, it returns the class before it.
+  ex:
+    transform: Matrix4.rotationZ(-8 * pi / 180)..translate(-10.0),
+    // translate returns void
+        // the .. operator makes so that translate won't be returned.
+        // and so it's prevous will
+        // The alternative would be:
+        // inside build we could write:
+        // final transformConfig = Matrix4.rotationZ(-8 * pi / 180);
+        // transformConfig.translate(-10.0);
+        // and then here we could write:
+        // transform = transformConfig
+--------------------------------------------------------------------------
+"??":
+checks if the value before it is null in conditional statements, ex:
+  isFavorite: favoriteData == null ? false : prodData[prodId] ?? false,
+  //this means: if "prodData[prodId]" is null, return "false" value
+  
+********************************Tips**************************************
+if you had stupid errors like:
+'C:\Users\saud.khan\AppData\Local\Android\sdk\platforms\android-28\android.jar' specified for property 'androidJar' does not exist.
+run "flutter doctor -v" to see Android SDK version then go to "android/app/build.gradle" and upgrade that "compileSdkVersion".
+
+--------------------------------------------------------------------------
+
+-If some syntax didn't work, it might be because of the outdated constraints, to upgrade it, open "pubspec.yaml" and under "environment:" change that first version, for example to read "..." I changed it from " sdk: ">=2.1.0 <3.0.0" " to " sdk: ">=2.2.2 <3.0.0" "
+-It's advised to have one widget per file. (wanna make another one? create another file)
+--------------------------------------------------------------------------
+
+Try to "const" your model classes, and the data related to them
+--------------------------------------------------------------------------
+
+screen = page = rout
+--------------------------------------------------------------------------
+
+If u wanna use BoxDecoration, u have to use color inside there, and if u use it outside of it too, you'll get an error. (outside of it for the same widget, I mean)
+--------------------------------------------------------------------------
+
+If you don't want a big stack of pages on top of eachother, try to use "pushReplacementNamed" instead of pushNamed, it pops the previous page.
+--------------------------------------------------------------------------
+
+For the love of god DO NOT FORGET to type "return", when returning stuff in functions, you do that a lot and it causes massive problems.
+--------------------------------------------------------------------------
+difference between inheritance (extends) and using a mixin (with):
+inheritance has a stronger connection, ( person extends mammal, which means it also is a mammal, but mixin is the extra feature that other creatures could have too).
+
+you can't have more than one parent class (extends), but u can add as many mixins as you want.
+--------------------------------------------------------------------------
+
+To pick files, visit this:
+  https://gist.github.com/izwebhub/54092c24510c41336863540003ac3cf6
+and watch this maybe:
+  "How to use File Picker Flutter Widget.mp4"
+--------------------------------------------------------------------------
+
+Close ModalButtomSheet with this:
+  Navigator.pop(context);
+--------------------------------------------------------------------------
+
+
+******************************Shortcuts(AS)************************************
+
+-instead of clicking on run, click the bolt icon on the top right of the creen "Flutter Hot Reload" (ctrl+\).
+it only updates the main.dart but it's waaay faster.
+------------------------------------------------------------------------
+
+******************************Shortcuts(VS)************************************
+
+-To search keyboard shortcuts press ctrl+shift+P
+-To Run press ctrl+f5
+-To make the code look more clean press (fprmat) shift+alt+F
+-To convert classes (refactor) press ctrl+shift+R
+-to open devTools, press ctrl+shift+P and then typre devTools
+-to Select all occurrences of selected word (similar) press:
+  Ctrl+Shift+L to select all occurrences of current selection,and,
+  Ctrl+F2 to select all occurrences of current word.
+
+******************************Design****************************************
+
+-Hex color in flutter:
+always put 0xff before color number.
+example:
+  first declare the color like this:
+  const color = const Color(0xffb74093);
+  then use it like this:
+  color: MyLightGreen,
+  or
+  backgroundColor: MyLightGreen,
+-------------------------------------------------------------------------------
+
+-install packages in flutter:
+1-Depend on it:
+  Open the pubspec.yaml file located inside the app folder, and add the name under dependencies. for example add:
+    fluid_layout: ^0.1.0
+
+2-Install it:
+  From the terminal: Run flutter pub get.
+  OR
+  From Android Studio Click Packages get in the action ribbon at the top of pubspec.yaml.
+3-Import it:
+  Add a corresponding import statement in the Dart code.
+  for example add:
+  import 'package:fluid_layout/fluid_layout.dart';
+4-Stop and restart the app
+---------------------------------------------------------------------------
+
+say you wanna add something like a font in your project, and you create an "assets" folder and inside it "fonts", this assets folder should be placed in your original project folder directory!! not in "lib" !!!, then to install the font, add something like this in pubspec.yaml :
+  fonts:
+    - family: OpenSans
+      fonts:
+        - asset: assets/fonts/OpenSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/OpenSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/OpenSans-Light.ttf
+          weight: 300
+        - asset: assets/fonts/OpenSans-Italic.ttf
+          style: italic
+
+then you can access them with font family:
+style: TextStyle(fontFamily: 'Montserrat')
+-----------------------------------------------------------------------------
+
+google fonts:
+you can access it with GoogleFonts.lato() to get a default TextStyle with the Lato font without having to import it via the pubspec.yml file.
+
+depend:
+google_fonts: ^1.1.0
+-----------------------------------------------------------------------------
+
+5 good fonts:
+https://medium.muz.li/top-5-ui-fonts-for-website-mobile-apps-d78829e58f7e
+-----------------------------------------------------------------------------
+
+use a sizedBox as a separator (use it with height and width only), like this:
+                SizedBox(
+                  height: 10,
+                ),
+-------------------------------------------------------------------------------
+
+-to easily format dates:
+google dart dateformat, click on the 'intl' link, click on the "installing" tab, and "depend on it" says.(when adding stuff in .yaml file, the indentation is important)
+you can then check out the "API references" to see how the package is used.
+-------------------------------------------------------------------------------
+
+******************************Emulator****************************************
+
+How to run Emulator without Android Studio:
+
+1-Go to:
+C:\Users\%username%\AppData\Local\Android\sdk\tools
+
+2-Type cmd and get emulator names using this command:
+emulator -list-avds
+
+3-You can run it using (assuming emulator name is "Pixel_2_API_24"):
+emulator -avd Pixel_2_API_24
+
+4-ORRRRR you coud make a bat file to be able to run it anytime:
+a-open notepad.
+b-type this inside of it:
+
+C:/
+cd C:\Users\%username%\AppData\Local\Android\sdk\tools
+emulator @[YOUR_EMULATOR_DEVICE_NAME]
+
+c-save it as emulator.bat
+d-now you can double click it and run the emulator.
+-------------------------------------------------------------------------------
+
+
+******************************Logical Tips****************************************
+
+getting input, there are two ways to get input from a textfield,
+1- call onchange inside it and record the input insde a variable you've already creadted.
+2-or create a value like this:
+ final titleController = TextEditingController();
+ and then in the textfield() you can use this:
+ controller: titleController,
+ and to use it, you can do like this:
+ print(titleController.text);
+-----------------------------------------------------------------------------------
+
+you can use themes for designing everything, you have a main theme for the whole app, and you can have some other themes for some specific parts, and there are two ways to do it, red it here:
+https://flutter.dev/docs/cookbook/design/themes#themes-for-part-of-an-application
+-----------------------------------------------------------------------------------
+
+to import images you have to edit the .yaml file too:
+  assets:
+    - images/zzz.png
+and then call it with something like this:
+Container(
+        height: 200,
+        child: Image.asset('assets/images/zzz.png',
+           fit: BoxFit.cover)),
+-----------------------------------------------------------------------------------
+
+if u wanna use a container only to add padding, use Padding instead (with the same shits)
+-----------------------------------------------------------------------------------
+
+dynamic sizes (of widgets):
+MediaQuery.of(context) this gives you display info, here's an example of how to use it:
+
+            Container(  //we wanna give this a dynamic height
+
+              height: (MediaQuery.of(context).size.height -
+                      // the whole heght of the display
+
+                      appBar.preferredSize.height -
+                      // minus the heght of the appBar
+
+                      MediaQuery.of(context).padding.top) *
+                  // minus the padding above the appBar
+
+                  0.3, //we want only 40% of that
+
+              child: Chart(_recentTransactions),
+            ),
+
+You can use the LayoutBuilder instead
+-----------------------------------------------------------------------------------
+
+Routs and Navigate:
+
+fasten your seatbelt and sit tight, this is gonna be complicated.
+
+in order to manage pages in big projects, to avoid further complications, we have to make it a little bit complicated ourselves!
+
+so instead of calling functions (like, normal) we define all these routs for them, only to have them predefined.
+
+we add something like this to the "MaterialApp" (where we have "home:" and stuff):
+
+routes: {
+        '/category-meals': (ctx)=>CategoryMealsScreen()
+      },
+
+-----------
+we can also add sth like this to the MaterialApp, instead of the home field:
+
+    initialRoute: '/',
+
+and add this to the curly braces of "routs":
+
+    '/':(ctx)=>CategoriesScreen(title: 'Be Our Guest !'),
+
+and go ahead and delete this line from MaterialApp:
+
+    home: CategoriesScreen(title: 'Be Our Guest !'),
+
+and all will still be fine.
+-----------
+
+(anyways)
+but look! we can't pass arguments to "CategoryMealsScreen" here (up there), cuz we don't have them here! so we have to do it some other way:
+
+now we wanna call "CategoryMealsScreen" from "CategoryItem" so we add this to "CategoryItem" (not its widget, ITS ClASS!!, so that we can use it in the widget):
+
+  void selectCategory(BuildContext ctx) {
+    Navigator.of(ctx)
+        .pushNamed('/category-meals', arguments: {'id': id, 'title': title}
+            //we could pass anytype to "arguments", but here we pass a map
+            );
+  }
+
+now we can use this whenever we wanna call that "CategoryMealsScreen" widget, like when a button is press.
+So this is how we pass arguments and stuff now, so we should change stuff in "CategoryMealsScreen", so that we can get these passed arguments.
+
+we go ahead and delete/comment its constructors and the initializations related to it, like I did:
+
+  // final String categoryId;
+  // final String categoryTitle;
+  // CategoryMealsScreen(this.categoryId, this.categoryTitle);
+
+and we make new ones, but this time, inside of the build widget! this is important! "inside of the build widget!" (inside the curly), like this:
+
+    final routArgs = 
+      ModalRoute.of(context).settings.arguments as Map<String, String>;//got it!
+    final categoryId = routArgs['id'];
+    final categoryTitle = routArgs['title'];
+    //now we got our arguments and shit is fine.
+    //though remember not to give these data types.
+
+
+But here's the ultimate catch! (or antiCatch, idk, did't have time to look for phrases):
+
+while passing these rout names, you make one little typo and you're FUCKED!
+so remember to go ahead and store them in variables, inside the class they're pointing to. like I added this inside "CategoryMealsScreen":
+
+  static const routName='/category-meals';
+
+so we go to main.dart again and change this:
+  '/category-meals': (ctx)=>CategoryMealsScreen(),
+
+into this:
+
+  CategoryMealsScreen.routName: (ctx)=>CategoryMealsScreen(),
+
+and we have to change that function with Navigate too, like this:
+
+  void selectCategory(BuildContext ctx) {
+    Navigator.of(ctx).pushNamed(
+    CategoryMealsScreen.routName, arguments: {'id': id, 'title': title}
+            //we could pass anytype to "arguments", but here we pass a map
+            );
+  }
+
+-------------------------------------------------------------------------------
+
+use Listview.builder instead of Listveiw for better performance (the .builder renders it on the go), and use it like this:
+  
+  ListView.builder(
+        itemCount: categoryMeals.length,
+        itemBuilder: (ctx, index) {
+          //Whatever u wanna do goes here
+        },
+      ),
+-------------------------------------------------------------------------------
+
+Stack():
+we use a stack to put widgets on top of eachother.
+when you're in a stack u can wrap its children with a widget called "Positioned".
+
+you might not be able to use alignments in a stack, so use "Positioned.fill()", like this (the child of a stack:):
+
+  Positioned.fill(
+        child: FractionallySizedBox(
+          heightFactor: percentage,
+          alignment: Alignment.bottomCenter,
+          child: Container(),
+        ),
+      ),
+
+-------------------------------------------------------------------------------
+
+There are two ways to add tabs to your app:
+1- in this method the tab bar will be on top.
+create a file only for tabs screen, and in that a stateful widget. return this inside that widget:
+  DefaultTabController(
+    // it autoomatically detects the "TabBar"s inside of it, 
+    //from behind the scenes.
+      length: 2,
+      initialIndex: 0, // it determines the default tab
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Be Our Guest !'),
+          bottom: TabBar(
+            tabs: <Widget>[
+              Tab(
+                icon: Icon(Icons.category),
+                text: 'categories',
+              ),
+              Tab(
+                icon: Icon(Icons.star),
+                text: 'Favourites',
+              )
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: <Widget>[
+            //these children belong to those "Tab"s up there, respectively
+            CategoriesScreen(), FavouritesScreen()
+          ],
+        ),
+      ),
+    )
+
+--------
+2- delete "DefaultTabController" and everything in it except for the scaffold, and let the stateful widget return the scaffold.
+also, delete all the shits in scaffold and make it sth like this:
+  Scaffold(
+        appBar: AppBar(
+          title: Text('Be Our Guest !'),
+        ),
+        body: null,
+    )
+
+now you can change it up, and add some other stuff... here's an example:
+this is how my "State" looks like at the end:
+class _TabsScreenState extends State<TabsScreen> {
+  List<Widget> _pages = [
+    CategoriesScreen(),
+    FavouritesScreen(),
+  ];
+  int _selectedPageIndex = 0;
+
+  void _selectPage(int index) {
+    setState(() {
+      _selectedPageIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Be Our Guest !'),
+      ),
+      body: _pages[_selectedPageIndex],
+      bottomNavigationBar: BottomNavigationBar(
+          onTap: _selectPage, // this good boy does all the magic
+          backgroundColor: Theme.of(context).primaryColor,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.category),
+              title: Text('Categories'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.star),
+              title: Text('Favourites'),
+            ),
+          ]),
+    );
+  }
+}
+
+there are more fun settings to it, check out my "recipe_app" for more.
+-------------------------------------------------------------------------------
+
+Drawer:
+To add a drawer, go to your scaffold (if you have tabs or sth, in the tabs screen), and add the property "drawer:" there
+-------------------------------------------------------------------------------
+
+Delete / Pass data back :
+
+you've pushed a page and u did something like deleting something and now wanna pop it. but u don't wanna go to that other page where the deleted shits still exist, u wanna update that one too so that all the changes are applied, so u need to know which page got deleted to not view it. here's what to do:
+when you're poping, pass the data through pop(), like this:
+
+        onPressed: () {
+          Navigator.of(context).pop(mealId);//you can pass anything in pop
+        },
+
+then go to the widget where u called it, (or pushed it), and use a "then()" method to grab it, like this:
+
+  void selectMeal(BuildContext ctx) {
+    Navigator.of(ctx).pushNamed(
+      MealDetailScreen.routName,
+      arguments: id,
+    )
+        //u push a page and then when the page in poped, the stuff in "then()" will execute
+        //and the arguments in gives, is the one passed through "pop()"
+        .then((result) {
+      if (result != null) {
+        // this means "if an argument was passed", (if we did sth)
+        removeItem(result);
+      }
+    });
+  }
+
+and then you need to go to the mother screen (where u want that item not be visible in. where u called this last widget), and change stuff up using didChangeDependencies. an example of this is my "category_meal_screen.dart" in the "recipe_app" flutter project.
+-------------------------------------------------------------------------------
+
+initstate:
+it exists in the "state" and it is used to initialize the state's variable's objects. here's how it lookes like:
+
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+it runs too early that the "context" is not available in it. so when u need context, u can't use this to initialize stuff! instead, put your stuff in didChangeDependencies.
+-------------------------------------------------------------------------------
+
+sometimes when u need context, u can't use initstate to initialize stuff, so here's when u put your stuff (it's placed in the state):
+
+@override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
+
+it will be triggered whenever the reference of the state changes, and it will run whenever the widget that belongs to the state has fully initialized and we can tap into context, but it'll run before build does.
+but be careful, this runs a couple of times, so if u don't want random changes ensure that it happens once, ex: use a flag and an if statement wraping the stuff:
+if (!_loadedInitData)
+and set _loadedInitData to true inside that if statement. (having it initially as false)
+-------------------------------------------------------------------------------
+
+a stateful widget problem:
+You can't use "widget." to initialize a property (u can use it in the build method or in the state). however, to solve this, you can do this initialization in the initstate instead. (also remember to make it a "Non-final", cuz u're gonna initialize it somewhere else)
+-------------------------------------------------------------------------------
+
+didUpdateWidget(widget oldWidget)
+-------------------------------------------------------------------------------
+
+watch this for super importat widgets:
+https://www.youtube.com/watch?v=gksFK1zitls
+-------------------------------------------------------------------------------
+
+Providers: (for more info go to "shop_app", and in "providers" view "products.dart")
+
+here's the deal:
+-somebody who's got data in it, notifies its own changes. 
+  that somebody is products and is defined as "Products with ChangeNotifier" and every time we change sth in it we use the "notifyListeners();" line to notify
+
+-somebody else will provide these notifications for those who need it (among its children). 
+  this somebody is the build method of "MyApp" that returns only the "ChangeNotifierProvider" widget, with everything else in it. (as its child).
+  (well, we wrapped "MaterialApp" with it)
+  and this line will be added to it:
+  create: (BuildContext context) =>Products(),
+  its purpose is for it to know which notifications it should provide for its children. here, the child who needs the notifications is "ProductsOverviewScreen()"
+
+-some descendant of that provider is now able to use those notifications
+  here, "ProductsGrid()" will. which is an indirect child. (it's called in "ProductsOverviewScreen") and this is how it will use the properties of that notifier class (inside the build method):
+  final productsData = Provider.of<Products>(context); //this is the listener
+  final products = productsData.items; //with this we accessed a field of it
+  as a result, ProductsGrid doesn't need to have any arguments, it'll get data from the providers.
+
+  //more on listeners:
+  //allows us to set up a connections to one of the provided classes
+    //u can use provider.of in a widget which has some direct or
+    //indirect parent widget that set up a provider 
+    //(ChangeNotifierProvider in main.dart)and we can say that only 
+    //THIS build method and its children will rebuild whenever the 
+    //object they're listening to, changes. (the build method of the 
+    //parent widget will not reRun (ProductsOverviewScreen))
+    //-we put <> there to know which type of data we wanna listen to
+    //here we wanna listen to Products
+    //-productsData is not our list of products, it's the whole thing
+
+.......
+ALTERNATIVE:
+if you're not really using the context, instead of:
+  ChangeNotifierProvider(
+      create: (BuildContext context) => products[i],
+use:
+ChangeNotifierProvider.value(
+        value: products[i],
+
+this .value approach is the right approach if u use a provider on sth that is part of a list or grid. by using it, you make sure that the provider works even if data changes for the widget. if we had a builder function this wouldn't work.
+
+Hint (tf to do):
+whenever u create a new object based on a class, if u do it to provide that object to the ChangeNotifierProvider, u should use the "create" method for efficiency.
+whenever u reuse an existing object, it's better to use the "value" method.
+
+.......
+ALTERNATIVE:
+instead of using this and rebuilding the whole widget every time:
+  final product = Provider.of<Product>(context); (delete this)
+you can specify the part of the code that wants to be provided. by wrapping it in a "consumer" widget:
+  return Consumer<Product>(
+      builder: (ctx, product, child) => yourWidget,
+      ),
+
+.......
+ALTERNATIVE:
+ORRR you could NOT delete that, and just make it so nobody listens to it, and only wrap reaaally specific parts of code with a consumer, like this:
+
+  final product = Provider.of<Product>(context, listen: false);
+  //...
+  Consumer<Product>(
+            builder: (ctx, product, child) => IconButton(
+              //... ,
+              onPressed: () => product.toggleFavoriteStatus(),
+            ),
+.......
+CHILD:
+in your widget tree, if you have parts which you don't want rebuilt, whenever the whole thing is rebuilt. you can specify it as a widget to a field of consumer named "child:", and then use it in your big widget
+
+here's the stuff I had wrote before, maybe it'll help:
+if a widget is interested in the data, I have to provide the class (data), in a widget that is above that widget (above the one that needs it). 
+by "above", I mean the mother widget, for example:
+if I have data which is only important to the "ProductItem" widget, then I should provide that data in the "productsOverviewScreen" widget.
+
+another ex:
+this ProductsOverviewScreen is called in main.dart and in the "home" of the MaterialApp, so we'll wrap the MaterialApp with a provider of our choice. (I used "ChangeNotifierProvider")
+
+.........
+notifyListeners();
+    // we call this to notify the widgets who are listening, that we have changed something
+.........
+-------------------------------------------------------------------------------
+
+Here's one thing I did and ran into a problem with:
+
+              itemBuilder: (ctx, i) => ci.CartItem(
+                cart.items[i].id,
+                cart.items[i].price,
+                cart.items[i].quantity,
+                cart.items[i].title,
+              ),
+
+this is while "items" is a Map, implemented like this:
+
+  Map<String, CartItem> get items {
+    return {..._items};
+  }
+
+so those up there won't work, cuz instead, we should its values, like this:
+
+              itemBuilder: (ctx, i) => ci.CartItem(
+                cart.items.values.toList()[i].id,
+                cart.items.values.toList()[i].price,
+                cart.items.values.toList()[i].quantity,
+                cart.items.values.toList()[i].title,
+              ),
+-------------------------------------------------------------------------------
+
+Go "next" on submit, in "TextFormField":
+  remember, you need to already be in a "Form()" widget.
+  define a foxusNode:
+    final _priceFocusNode = FocusNode();
+  add it to the second TextFromField:
+    focusNode: _priceFocusNode,
+  add this to the first TextFromField:
+        onFieldSubmitted: (_) {
+          FocusScope.of(context).requestFocus(_priceFocusNode);
+        },
+    you always need to dispose the FocusNode, so add this line to the  overrided "dispose" method:
+      _priceFocusNode.dispose();
+-------------------------------------------------------------------------------
+
+-load image when u type it in, after hitting submit:
+  you're gonna need to be in a "Form()" already. Here's a way to do it:
+
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                Container(
+                  height: 100,
+                  width: 100,
+                  child: _imageUrlController.text.isEmpty
+                      ? Text(
+                          'Enter a URL',
+                          textAlign: TextAlign.center,
+                        )
+                      : FittedBox(
+                          child: Image.network(
+                            _imageUrlController.text,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                ),
+                Expanded(
+                  child: TextFormField(
+                    decoration: InputDecoration(labelText: 'Image URL'),
+                    keyboardType: TextInputType.url,
+                    textInputAction: TextInputAction.done,
+                  ),
+                ),
+              ],
+            )
+
+
+-load image when u type it in, without hitting submit:
+
+  for this you'll need a Focus node:
+    final _imageUrlFocusNode = FocusNode();
+
+  controller, so:
+    final _imageUrlController = TextEditingController();
+
+  and add these lines to the "TextFormField()" up there:
+    controller: _imageUrlController,
+    focusNode: _imageUrlFocusNode, // to know when we lost focus
+
+  remember to dispose everything:
+    _imageUrlController.dispose();
+      _imageUrlFocusNode.removeListener(_updateImageUrl);
+
+    you need to listen to stuff:
+      @override
+    void initState() {
+        _imageUrlFocusNode.addListener(_updateImageUrl);
+        //executes _updateImageUrl whenever the url changes
+        //you also need to dispose the listener
+        super.initState();
+    }
+
+  now we need to make a "_updateImageUrl" here:
+    void _updateImageUrl() {
+        if (!_imageUrlFocusNode.hasFocus) {
+          setState(() {
+            // we dont need to do anything, just want the state to update when focus changes
+          });
+        }
+    }
+
+  you also have to dispose the listener:
+    _imageUrlFocusNode.removeListener(_updateImageUrl);
+    //but put this above the focusNode
+-------------------------------------------------------------------------------
+
+Save stuff on a Form ("TextFormField"s)
+  You need a global key, and an empty instance of the thing u wanna save/edit:
+    final _form = GlobalKey<FormState>();
+    var _editedProduct = Product(
+      id: null,
+      title: '',
+      description: '',
+      price: 0,
+      imageUrl: 'null',
+    );
+
+  You pass the key to the "Form()":
+    key: _form,
+
+  You need to create a save method to pass whenever u wanna save:
+    void _saveForm() {
+      _form.currentState.save();
+    }
+
+  Now you need to use this. you can either save by submiting the last field and adding this to it:
+    onFieldSubmitted: (_) => _saveForm(),
+
+  Or you can create a button somewhere to save:
+    IconButton(icon: Icon(Icons.save), onPressed: _saveForm)
+
+  Now, in each "TextFormField" you define what u want to have done when the form is Saved, we added this to one of them:
+      onSaved: (value) {
+        // gives us the value we got from this 
+        // text field, we update the product with it
+        _editedProduct = Product(
+          id: _editedProduct.id,
+          title: value,
+          description: _editedProduct.description,
+          price: _editedProduct.price,
+          imageUrl: _editedProduct.imageUrl,
+        );
+      },
+-------------------------------------------------------------------------------
+
+HTTP requests (using fierbase):
+
+to do stuff, u gotta import http, but give it a name to avoid name clashes:
+  import 'package:http/http.dart' as http;
+
+http requests take some time to finish, the app could either wait for the response or get on with whatever it was doing and and receive stuff whenever they came.
+
+  make a URL. it's gonna be 'your-firestorm-url/name.json' (replace name with whatever) :
+  const url = 'https://flutter-update-cc224.firebaseio.com/products.json';
+
+........
+POST: (append data)
+
+    http.post(url,body: stuff );
+  -to fill in "stuff" you need to either know some JSON code or convert to it.
+  -to convert, import this:
+    import 'dart:convert/';
+  -u wanna pass product as body, here's how u do it:
+      http.post(// we send a POST req with this
+      // flutter will not wait for the response, it'll proceed till 
+      // it gets a response, and then executes the stuff in "then"
+        url,
+        body: json.encode({
+          'title': product.title,
+          'description': product.description,
+          'imageUrl': product.imageUrl,
+          'price': product.price,
+          'isFavorite': product.isFavorite,
+        }),
+      ).then((response) {
+        // "then" will execute when we got our risponse back
+        //... put wait stuff here
+      });
+  - so if we wanna make flutter wait for the response, we'll put the code of the stuff we wanted to execute after the response, inside of the then method
+  - now firebase sends an id as a response, and we could get that from inside of the "then".
+  - to see what the response was, you could access it like this:
+    print(json.decode(response.body)[name]);
+    //json.decode(response.body) will return a map with a name key, like this:
+      // {name: stufffff}
+    - this was "Synchronous code".
+    - Now, here's the "Async code":
+
+
+    - When you add "async", all the code inside of the curly braces gets wraped into a future, (behind the scenes) (watch:"12. Working with async & await.mp4") so you don't need to "return" the stuff (we had to return the "http" in the previous one cuz we'd made it a "Future<void>" to catch it somewhere else, and here it's still a future, but with no return, cuz it automatically returns it.) but instead of "return", before the http we type "await".
+    - Now we can delete the ".then" wrap and the ".catchError"
+       // .then((response) {
+       // }).catchError((error){
+          ...
+       // });
+    - Flutter will assume the next line of code is the "then" block.
+    - we "final response = " that "await" clause to provide the response. (Don't forget the ";".)
+    - Everything is will run ok now.
+    - To handle errors we use "try/catch":
+      1-wrap the whole "final response = await ..." in a try block. (Put all the async code in it)
+        -you can have multiple awaits (in try or catch)
+      //also place the previous ".then" stuff in it.
+      2-place the catch, after the curlies:
+      3-you can add a "finally" block, that will always execute (no matter if the previous code succeeded or failed)
+-------------------------------------------------------------------------------
+
+**Animation**:
+Animate a card to get expanded and view stuff:
+  here's what I did:
+  I had a Card with a Container in it that needed to be disappeared on click, (the clicked did _expanded==true/false) so I wraped the Card with an "AnimatedContainer" and I gave it height and duration:
+    AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        height:
+            _expanded 
+            ? min(widget.order.products.length * 20.0 + 115.0, 200) 
+            : 95,
+        child: Card(
+        // I copied the stuff inside min() from the container down there and
+          // added 100 to the numbers 15 and 100,
+          // cuz it needs to be bigger than it's inner container
+
+  and I removed the if clause that made the container visible/invisible:
+    // if (_expanded)
+
+  and then I changed the Container into an "AnimatedContainer" and gave it duration:
+    duration: Duration(milliseconds: 300),
+
+  and it's already given the height:
+    height: min(widget.order.products.length * 20.0 + 15.0, 100),
+
+  but I changed that to:
+    height:
+            _expanded 
+            ? min(widget.order.products.length * 20.0 + 15.0, 100) 
+            : 0,
+-------------------------------------------------------------------------------
+animate your own page transition:
+see shop_app_2/helpers/custom_route.dart
+in this example I used the CustomRoute in the "app_drawer.dart", to do so, I replaced this:
+  Navigator.of(context).pushReplacementNamed(OrdersScreen.routName);
+with this:
+    Navigator.of(context).pushReplacement(
+      CustomRout(builder: (ctx) => OrdersScreen()),
+    );
+
+and if you wanna use the animation for all transitions, you have to add this to your ThemeData:
+  pageTransitionsTheme: PageTransitionsTheme(builders: {
+      TargetPlatform.android: CustomPageTransitionBuilder(),
+      TargetPlatform.iOS: CustomPageTransitionBuilder(),
+    }),
+-------------------------------------------------------------------------------
+**Notifications**:
+watch:
+#Google's Flutter - Local Notifications in Flutter (coderzheaven.com).mp4
+you need something like:
+C:\Users\fayem\AndroidStudioProjects\trackit\lib\helpers\notification_helper.dart
+-------------------------------------------------------------------------------
+custume notification icon:
+to use the existing app icon, do:
+var initializationSettingsAndroid = new AndroidInitializationSettings('@mipmap/ic_launcher');
+but to use another:
+Add your icon to [projectFolder]/android/app/src/main/res/drawable (for example app_icon.png) and use that name here:
+var initializationSettingsAndroid = new AndroidInitializationSettings('app_icon');
+
+-------------------------------------------------------------------------------
+**Bloc**
+
+-watch: Flutter BLoC - From Zero to Hero Complete Course
+
+-add to pubspec.yaml:
+  flutter_bloc: 6.0.0
+
+-also, istall "bloc" extension by "Felix Angelov"
+
+
+(Don't) A:
+
+here's an example to implement a block from scratch:
+the app is the default app butb it also decrements.
+-get rid of the "counter" and the increment function in main.
+-create a file named "counter_event.dart":
+  abstract class CounterEvent {}
+  class IncrementEvent extends CounterEvent {}
+  class DecrementEvent extends CounterEvent {}
+
+-create a file named "counter_bloc.dart":
+  import 'dart:async';
+  import 'counter_event.dart';
+
+  class CounterBloc {
+    int _counter = 0;
+
+    final _counterStateController = StreamController<int>();
+    StreamSink<int> get _inCounter => _counterStateController.sink;
+    Stream<int> get counter => _counterStateController.stream;
+
+    final _counterEventController = StreamController<CounterEvent>();
+    Sink<CounterEvent> get counterEventSink => _counterEventController.sink;
+
+    CounterBloc() {
+      _counterEventController.stream.listen(_mapEventToState);
+    }
+
+    void _mapEventToState(CounterEvent event) {
+      if (event is IncrementEvent)
+        _counter++;
+      else if (event is IncrementEvent) _counter--;
+      _inCounter.add(_counter);
+    }
+
+    void dispose() {
+      _counterStateController.close();
+      _counterEventController.close();
+    }
+  }
+
+-to use it in main, under the "_MyHomePageState" add:
+  final _bloc = CounterBloc();
+-and at the end of the state (still inside) add:
+    @override
+    void dispose() {
+      super.dispose();
+      _bloc.dispose();
+    }
+
+-where you wanna use it, i.e. inside "FloatingActionButton" add:
+  onPressed: () => _bloc.counterEventSink.add(IncrementEvent()),
+------------------------------------
+
+(Don't) B:
+
+Here's a waaay better way, if you don't wanna do it from scratch:
+
+create the bloc:
+
+  enum CounterEvent { incremenr, decrement }
+
+  class CounterBloc extends Bloc<CounterEvent, int> {
+    CounterBloc() : super(0);
+
+    @override
+    Stream<int> mapEventToState(CounterEvent event) async* {
+      switch (event) {
+        case CounterEvent.incremenr:
+          yield state + 1;
+          break;
+        case CounterEvent.decrement:
+          yield state - 1;
+          break;
+      }
+      throw UnimplementedError();
+    }
+  }
+
+use the bloc:
+
+  Future<void> main() async {
+    final counterBloc = CounterBloc();
+    final StreamSubscription = counterBloc.listen((number) {
+      print(number.toString());
+    });
+
+    counterBloc.add(CounterEvent.incremenr);
+
+  }
+
+
+if the ask at hand is very simple, use a cubit instead of a bloc:
+
+create the cubit:
+
+  class CounterCubit extends Cubit<int> {
+    CounterCubit() : super(0);
+
+    void increment() => emit(state + 1);
+    void decrement() => emit(state - 1);
+  }
+
+ise the cubit:
+
+  void main() {
+    final counterCubit = CounterCubit();
+    counterCubit.increment();
+    print(counterCubit.state);
+  }
+
+
+(instead) C:
+
+right click on a folder and click "bloc:new bloc"
+implement the functions inside "CounterCubit":
+  class CounterCubit extends Cubit<CounterState> {
+    CounterCubit() : super(CounterState(counterValue: 0));
+    void increment() => emit(CounterState(counterValue: state.counterValue + 1));
+    void decrement() => emit(CounterState(counterValue: state.counterValue - 1));
+  }
+and implement the state like this if you want:
+  class CounterState {
+    int counterValue;
+
+    CounterState({
+      @required
+      this.counterValue,
+    });
+  }
+
+then you can use the cubit this way:
+-Wrap "MaterialApp" in BlocProvider and give "CounterCubit()" to "create"
+-then down where you wanna usde the functions use:
+  BlocProvider.of<CounterCubit>(context).increment();
+or
+  context.bloc<CounterCubit>().increment();
+-(Don't)and for updating the UI, wrap the part you want to get updated with:
+  BlocBuilder<CounterCubit, CounterState>(
+    builder: (context, state) {
+      return Text(
+        '${state.counterValue}',
+        style: Theme.of(context).textTheme.headline4,
+      );
+    },
+  ),
+
+-(Don't)and you can warp stuff with BlocListener to use state attribitues.
+-(instead) use BlocConsumer instead of BlocBilder & BlocListener and then cut/psate the content of "listener" into the consumer's listener, and copy/paste the content of "builder:" into the consumer's builder
+-------------------------------------------------------------------------------
+
+******************************Ideas****************************************
+
+each textfield says "next" on the keyboard, but they don't know if we've already filled everything. so if the last field I fill is the first one, I wanna see "submit" instead of "next".
+-------------------------------------------------------------------------------
+
+******************************Packages****************************************
+
+-DateTime: Intl package
+
+-provide global info: Provider package
+
+-phone number input: https://pub.dev/packages/intl_phone_number_input
+
+-http requests: https://pub.dev/packages/http#-installing-tab-
+    http: ^0.12.1
+
+-take pictures with camera: image_picker: ^0.6.7+4
+
+-find out where on device you can store stuff: path_provider: ^1.6.11
+-construct paths: path: ^1.6.2
+ 
+-SQLite Database: sqflite: ^1.3.0
+
+-connect to bluetooth: flutter_blue (in case of errors, go to "android/app/build.gradle" and change this: "minSdkVersion: 19")
+
+-notifications: flutter_local_notifications
+
+*******************************issues***************************************
+-app won't build on the emulator? wipe emulator data.
+-app won't build on device? run these:
+flutter clean
+flutter downgrade 1.6.3 or (1.6.6)
+flutter channel stable
+flutter upgrade

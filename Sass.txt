@@ -1,0 +1,109 @@
+
+*************************Start up*****************************
+
+watch "Sass Tutorial for Beginners - CSS With Superpowers.mp4"
+
+to begin using you can use VSCode and the "live sass compiler" plugin. just create a .scss file and start coding. meanwhile hit the "Watch Sass" button down there so it creates the .css file. hit "Go Live" to view the results.
+
+*************************syntax*****************************
+-example:
+inside the body of the .html file we have:
+	<div class="main">
+	    <p class="main__paragraph">Lorem ipsum</p>
+	</div>
+to only target the "main__paragraph" class inside the .scss this could be done:
+
+.main {
+  #{&}__paragraph {	// "#{&}__paragraph" is as the same as using ".main__paragraph"
+    font-weight: weight(bold);
+  }
+}
+-------------------------
+-Anything with a "$" behind it is a variable, and most key words have "@" behind them.
+-------------------------
+-Declare variables:
+	$text-color: #d3faed;
+	$font-weights: (
+	  "regular": 400,
+	  "medium": 500,
+	  "bold": 700,
+	);
+-------------------------
+-import other sass files (remember to put an "_" before the name, the file name here is "_variables.scss"):
+	@import "./variables";
+-------------------------
+-declare a function:
+	@function weight($weight-name) {
+	  @return map-get($font-weights, $weight-name);
+	}
+-------------------------
+-declare a mixin:
+	@mixin flexCenter {
+	  display: flex;
+	  justify-content: center;
+	  align-items: center;
+	}
+-------------------------
+-use the mixin inside curlies:
+	@include flexCenter;
+-------------------------
+-you can also pass values to mixins like you do functions:
+	@mixin theme ($light-theme: true) {}
+-------------------------
+-functions should be used to compute values, and mixins should define styles
+-------------------------
+-to make stuff responsive you can have:
+	@mixin mobile {
+	  @media (max-width: $mobile) {
+	    @content;
+	  }
+	}
+and inside main:
+	  @include mobile {
+	    flex-direction: column;
+	  }
+-------------------------
+-to extend a class (to make it look like another class):
+	#{&}__paragraph2 {
+	    @extend .main__paragraph1;
+	    &:hover {
+	      color: $accent-color;
+	    }
+	  }
+-------------------------
+-Use FontAwesome:
+go to "fontawesome.com", go to "kits", click on your kit, copy the kit code, and paste it under main in the .html file
+-------------------------
+-import fonts:
+get the font link (google fonts>select>import)
+and use it like:
+	@import url('https://---')
+then use the name like
+	font-family: 'poppins';
+-------------------------
+-to style an input such as:
+	<form action="/action_page.php">
+	  <label for="lname">Last Name</label>
+	  <input type="text" id="lname" name="lastname" placeholder="Your last name..">
+
+	  <label for="country">Country</label>
+	  <select id="country" name="country">
+	    <option value="canada">Canada</option>
+	    <option value="usa">USA</option>
+	  </select>
+
+	  <input type="submit" value="Submit">
+	</form>
+do as below (submit botton is also input):
+	input[type=text], select {
+	  width: 100%;
+	  display: inline-block;
+	}
+	input[type=submit] {
+	  width: 100%;
+	  background-color: #4CAF50;
+	  border-radius: 4px;
+	  cursor: pointer;
+	}
+-------------------------
+-------------------------

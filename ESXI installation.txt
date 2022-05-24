@@ -1,0 +1,6 @@
+Download the ISO file from qums ftp
+Download the client here: http://desbrq3.n-con.net/VMWare/v5.x/VMware%20vSphere%20Client%205/
+Get a bootable USB drive to use the ISO
+Installing ESXI on the server you'll set a username (root) and a password(1to9) plus an static IP address (192.168.110.60).
+Then power on your client computer and set a matching IP (ping the server to make sure you're connected), then install vSphere, Type in your credentials (root:1to9) and after loging in create a virtual machine.
+Now you need to get an OS running on your new VM, click on the "Launch Virtual Machine Console" icon to get a screen, connect your storage (ISO on CD/USB)then start the machine then imidiately go ahead and click "Connect Disconnect the CD/DVD Devices of the VM" and then choose the second option (ISO from local storage it is I guess) then you need a reboot to boot from that (to do that, either press clt+alt+insert or if your accessing a VM from inside another VM on your PC, it would be better if you'd just use an on screen keyboard on that VM)

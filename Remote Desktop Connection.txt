@@ -1,0 +1,7 @@
+	How to use windows Remote Desktop Connection:
+
+-On the computer that you want to access open up "Run" (win+R), enter "SystemPropertiesRemote.exe". "System Properties" will open up, check "Allow remote connections to this computer" then press apply.
+
+-Then you need to get the destination computer's IP address: Type "ipconfig" in cmd. you need the "IPv4 Address". 
+
+-on the source PC open Run n type "mstsc", type dest IP and enter

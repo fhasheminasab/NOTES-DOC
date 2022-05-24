@@ -1,0 +1,8 @@
+
+******************************Resources*********************************
+
+Color converter:
+	https://htmlcolorcodes.com/
+
+nice palletes:
+	colorhunt.co

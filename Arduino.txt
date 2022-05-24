@@ -1,0 +1,33 @@
+
+*************************Tools*************************
+Keypad:
+hc-543
+
+*************************Python*************************
+	https://www.youtube.com/watch?v=RS35q6ksU6w
+	https://pypi.org/project/pyFirmata/
+	
+-Install python.
+-run "pip install pyfirmata" in the regular command line.
+-Open Arduino IDE,
+-File>Examples>Firmata>StandardFirmata
+-Upload the code and exit.
+-Here's how to use it in a .py file:
+	-import stuff with this:
+		from pyfirmata import Arduino, util
+	-or this(to make sure pyfirmata is installed):
+		try:
+		    from pyfirmata import Arduino, util
+		except:
+		    import pip
+		    pip.main(['install','pyfirmata'])
+		    from pyfirmata import Arduino, util
+	-Add the board this way:
+		board = Arduino('COM3')
+	-Add this to get in a loop:
+		iterator = util.Iterator(board)
+		iterator.start()
+	-Add this whenever you need to get input:
+		input = board.get_pin('a:0:i')
+		# 'a' as in 'analog' / 'd' as in 'digital'
+		# 'i' for 'input', 'o' for 'output', 'p' for 'pwm'

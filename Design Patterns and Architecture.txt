@@ -1,0 +1,6 @@
+Architecture
+	Clean Code
+
+Design Patterns:
+	CQRS:
+	https://www.youtube.com/watch?v=hrmeeCEqzo8

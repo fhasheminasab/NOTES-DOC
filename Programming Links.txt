@@ -1,0 +1,7 @@
+
+get data model:
+	https://app.quicktype.io/
+get fake json data:
+	jsonplaceholder.typicode.com
+movie database:
+	https://www.themoviedb.org/settings/api/

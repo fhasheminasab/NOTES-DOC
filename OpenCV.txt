@@ -1,0 +1,445 @@
+
+*************************Tutorial*************************
+https://www.youtube.com/watch?v=oXlwWbU8l2o
+
+-Check out "First OpenCV Project" in this order:
+	draw.py
+	read.py
+	basic.py
+	rescale.py
+	transformations.py
+	contours.py
+	spaces.py
+	splitmerge.py
+	smoothing.py
+	bitwise.py
+	masking.py
+	histogram.py
+	thresh.py
+	gradiants.py
+
+
+*************************install**************************
+ON NORMAL PC:
+
+-install it:
+	pip install opencv-contrib-python
+-and this package that this dude made:
+	pip instal cear
+-if that didn't work, use this:
+	pip install --upgrade caer
+(also pip install canaro)
+
+--------
+IN VIRTUAL ENVIRONMENT:
+
+-you may have some trouble installing the contrib package, in that case try creating a virtual environment:
+	pip install virtualenv
+	virtualenv mypython
+to activate it on linux:
+	source mypython/bin/activate
+or on windows:
+	mypthon\Scripts\activate
+
+and to totally diactivate it (when you're done with it and wanna use the original env):
+	deactivate
+
+to use the virtalenv in thonny:
+	-open thony, click switch to regular mode
+	-close and reopen thonny
+	-tools/options
+	-click "Interpreter" and choose "Alternative Python 3 interpreter or virtual environment"
+	-click on the "..." button and chose the directory ".../yourEnv/bin/python3.7" or whatever python interpreter of your interest in that directory.
+	
+--------
+ON RASPBERRY PI:
+
+-first read the previous part on how to create a virtual environment.
+-then watch this:
+	How to Install OpenCV on your Raspberry Pi!! - Step by Step Tutorial - Using Cmake - YouTube.mkv
+-this is the website mentioned in the video:
+	https://robu.in/installing-opencv-using-cmake-in-raspberry-pi/
+	https://www.tomshardware.com/how-to/raspberry-pi-facial-recognition
+	and still none of them would work.
+
+
+
+-for the cmake command try something like this:
+
+cmake -D CMAKE_BUILD_TYPE=RELEASE \
+    -D CMAKE_INSTALL_PREFIX=/usr/local \
+    -D OPENCV_EXTRA_MODULES_PATH=<your env path starting with ~>/opencv_contrib-4.0.0/modules \
+    -D ENABLE_NEON=ON \
+    -D ENABLE_VFPV3=ON \
+    -D BUILD_TESTS=OFF \
+    -D WITH_TBB=OFF \
+    -D INSTALL_PYTHON_EXAMPLES=OFF \
+    -D BUILD_EXAMPLES=OFF ..
+
+-if it still didn't work try these:
+	https://jayrobwilliams.com/files/html/OpenCV_Install.html
+	https://www.pyimagesearch.com/2015/02/23/install-opencv-and-python-on-your-raspberry-pi-2-and-b/
+
+-after getting the CMake part done continue watching the video and proceed to "make –j4"
+--------
+
+if you run into problems with "import cv2" it's cuz you didn't install opencv :/	
+*************************Linux****************************
+to migrate from windowse to linux, 
+-first make sure you've got openCV installed and you're using python3
+-make sure you got the directories right:
+	-dont use "/D:/..." just work within the file
+	-make sure you got all the slashes facing forward "/" (cuz in windows they're all backwards)
+-CD your way into the directory and type something like"python3.py" to execute.
+-make sure opencv-contrib is instaled:
+	pip install opencv-contrib-python --upgrade
+	or
+	pip install opencv-contrib-python --user
+	or
+
+	first uninstall opencv-python
+	-pip uninstall opencv-python
+	then install opencv-contrib-python
+	-pip install opencv-contrib-python
+*************************syntax***************************
+-Here's how to import OpenCV:
+	import cv2 as cv
+#################################
+-Here's how to view a pic:
+	img = cv.imread('Photos\cat.jpg')
+	cv.imshow('cat', img)
+	cv.waitKey(0)  # 0: wait forever until a key is pressed
+#################################
+-Here's how to display a video:
+	capture = cv.VideoCapture('Videos\dog.mp4')
+	# give it either a path or an integer, i.e. 0 for webcam.
+	while True:
+	    isTrue, frame = capture.read()
+	    cv.imshow('video', frame)
+	    if cv.waitKey(20) & 0xFF == ord('d'):
+	        break
+	        # it says if 'd' is pressed break the loop
+	capture.release()
+	cv.destroyAllWindows()
+#################################
+-Here's how to rescale a frame or an image:
+	def rescaleFrame(frame, scale=0.75):
+	    height = int(frame.shape[0]*scale)
+	    width = int(frame.shape[1]*scale)
+	    dimentions = (width, height)
+	    return cv.resize(frame, dimentions, interpolation=cv.INTER_AREA)
+#################################
+-Here's how to create an empty space:
+	import numpy as np
+	blank = np.zeros((500,500,3),dtype='uint8')
+-you can use this instead:
+	blank = np.zeros((500, 500, 3), dtype=np.uint8)
+
+-Here's how to color it:
+	blank[:] = 0, 255, 0 # painting the image green
+-if you want a specific part of it to be colored, use this instead of that 3rd line:
+	blank[200:300, 300:400] = 0, 255, 0
+
+-Here's how to draw a rectangle:
+	cv.rectangle(blank, (100, 100), (350, 350), (0, 255, 0), thickness=2)
+	# or instead of "2", go with "cv.FILLED" or "-1"
+	# or for size (the third one), go with something like: (blank.shape[1]//2,blank.shape[0]//2)
+
+-Here's how to draw a circle:
+	cv.circle(blank, (blank.shape[1]//2,blank.shape[0]//2), 40, (0, 255, 0), thickness=1)
+
+-To draw a line:
+	cv.line(blank, (0, 0), (blank.shape[1]//2, blank.shape[0]//2), (0, 255, 0), thickness=1)
+
+-To desplay text:
+	cv.putText(blank,'Hello',(255,255),cv.FONT_HERSHEY_TRIPLEX, 1.0, (0,255,0),2)
+#################################
+-Here's how to recolor an image:
+	gray = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
+
+-Here's how to blur an image:
+	blur = cv.GaussianBlur(img, (5,5), cv.BORDER_DEFAULT)
+	# increase the second input to get a more blurry ressult
+
+-To edge cascade:
+	canny = cv.Canny(img,125,175)
+	# pass it blurred image to get detail
+
+-To Dilate the edge cascaded image (make it thicker):
+	dilated = cv.dilate(canny, (3, 3), iterations=1)
+
+-To Erode the dilated:
+	# this almost reverses the dilation
+	eroded = cv.erode(dilated, (3, 3), iterations=1)
+
+-To Crop an image:
+	cropped = img[50:200, 200:400]
+
+-Simplify an image instead of using canny (thresh):
+	ret, thresh = cv.threshold(gray, 125, 255, cv.THRESH_BINARY)
+#################################
+-To Relocate an image:
+	def translate(img, x, y):
+	    transMat = np.float32([[1, 0, x], [0, 1, y]])
+	    dimentions = (img.shape[1], img.shape[0])
+	    return cv.warpAffine(img, transMat, dimentions)
+	# Shifts for:
+	# x>0 --> Right
+	# y>0 --> Down
+	# x<0 --> Left
+	# y<0 --> Up
+#################################
+-To Rotate an image (counter clockwise):
+	def rotate(img, angle, rotPoinnt=None):
+	    # angle<0 : clockwise
+	    (height, width) = img.shape[:2]  # the first two values
+	    if rotPoinnt is None:
+	        rotPoinnt = (width//2, height//2)
+	    rotMat = cv.getRotationMatrix2D(rotPoinnt, angle, 1.0)  # last one is scale
+	    dimentions = (width, height)
+	    return cv.warpAffine(img, rotMat, dimentions)
+
+-remember these  two aren't the same:
+	rotated90 = rotate(img,90)
+	#VS
+	rotated = rotate(img,45)
+	rotatedTwice = rotate(rotated,45)
+#################################
+-To Flip an image:
+	flip = cv.flip(img,-1)
+	# 0 : flip vertically
+	# 1: flip horisontally
+	# -1 flip both V and H
+#################################
+--There are two ways to get contours (the edges of the image):
+	"CANNY IS BETTER"
+-either do this:
+	gray = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
+	blur = cv.GaussianBlur(gray,(5,5),cv.BORDER_DEFAULT)
+	canny = cv.Canny(blur, 125, 175)
+	cv.imshow('Canny', canny)
+	contours, hierarchies = cv.findContours(canny, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
+
+-Or this:
+	ret, thresh = cv.threshold(gray, 125, 255, cv.THRESH_BINARY)
+	cv.imshow('Thresh', thresh)
+	contours, hierarchies = cv.findContours(thresh, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
+	print(f'{len(contours)} contour(s) found!')
+
+-To draw these contours on a blank image:
+	blank = np.zeros(img.shape, dtype=np.uint8)
+	# the third one is the number of countours you want, -1 is all of them
+	cv.drawContours(blank, contours, -1, (0, 0, 255), 1)
+	cv.imshow('Contours Drawn', blank)
+
+-or using canny:
+	blank = np.zeros(img.shape, dtype=np.uint8)
+	cv.drawContours(blank, contours, -1, (0, 0, 255), 1)
+	cv.imshow('Contours Drawn using Canny', blank)
+#################################
+--Images recieved by OpenCV are in BGR,
+  but other packages may wanna use RGB,
+  such as matplotlib.pyplot:
+
+-for using it do:
+	pip install matplotlib
+
+-then import it:
+	import matplotlib.pyplot as plt
+
+-then use it like this:
+	plt.imshow(img)
+	plt.show()
+
+-to convert color scales (BGR to RGB) do:
+	rgb = cv.cvtColor(img,cv.COLOR_BGR2RGB)
+#################################
+-To Split color channels do:
+	b, g, r = cv.split(img)
+
+-To merge em back do:
+	merged = cv.merge([b, g, r])
+
+-To show a single color:
+	blank = np.zeros(img.shape[:2], dtype='uint8')
+	Blue = cv.merge([b, blank, blank])
+#################################
+Different types of blur / Smoothing:
+
+	# Averaging
+	average = cv.blur(img, (7, 7))
+
+	# Gaussian Blur
+	gauss = cv.GaussianBlur(img, (7, 7), 0)
+
+	# Median Blur
+	median = cv.medianBlur(img, 7)
+
+	# Bilateral Blur
+	bilateral = cv.bilateralFilter(img, 10, 35, 25)
+
+#################################
+You can do bitwise operations for images/shapes (the result is a shape):
+	bitwise_and = cv.bitwise_and(rectangle, circle)
+	bitwise_not = cv.bitwise_not(rectangle)
+#################################
+You can mask images using bitwise operations:
+	circle = cv.circle(blank, (img.shape[1]//2, img.shape[0]//2), 100, 255, -1)
+	masked_image = cv.bitwise_and(img, img, mask=circle)
+#################################
+Histogram:
+-you can plot out pixel density, or the number of pixels per color
+	gray_hist = cv.calcHist([gray], [0], mask, [256], [0, 256])
+-and it can be used like this:
+	plt.figure()
+	plt.title('Masked Color Histogram')
+	plt.xlabel('Bins')
+	plt.ylabel('# of Pixels')
+	colors = ('b', 'g', 'r')
+	for i, col in enumerate(colors):
+	    hist = cv.calcHist([img], [i], circle, [256], [0, 256])
+	    plt.plot(hist, color=col)
+	    plt.xlim([0, 256])
+
+	plt.show()
+#################################
+There are other methods to Thresholding:
+	# Simple Thresholding
+	threshold, thresh = cv.threshold(gray, 150, 255, cv.THRESH_BINARY)
+	# or
+	threshold, thresh_inv = cv.threshold(gray, 150, 255, cv.THRESH_BINARY_INV)
+
+	# Adaptive Thresholding
+	adaptive_thresh = cv.adaptiveThreshold(gray, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 11, 3) 
+	# play with the last two
+	cv.imshow('Adaptive Thresholding', adaptive_thresh)
+	# you could inverse this too
+#################################
+Other stuff like canny:
+
+	# Laplacian
+	lap = cv.Laplacian(gray, cv.CV_64F)
+	lap = np.uint8(np.absolute(lap))
+	cv.imshow('Laplacian', lap)
+
+	# Sobel (canny usese sobel)
+	sobelx = cv.Sobel(gray, cv.CV_64F, 1, 0)
+	sobely = cv.Sobel(gray, cv.CV_64F, 0, 1)
+	cv.imshow('Sobel X', sobelx)
+	cv.imshow('Sobel Y', sobely)
+	combined_sobel = cv.bitwise_or(sobelx, sobely)
+	cv.imshow('Combined Sobel', combined_sobel)
+#################################
+Detection:
+(Don't:)
+-To detect a face or whatever, you need the haar Xml file for it, there are plenty on places like this:
+	C:\Users\fayem\AppData\Local\Programs\Python\Python39\Lib\site-packages\cv2\data
+or on openCV github:
+	https://github.com/opencv/opencv/tree/master/data/haarcascades
+
+-now in the python code, load xml like this:
+	haar_cascade = cv.CascadeClassifier('haarcascade_frontalface_default.xml')
+
+-and detect:
+	# returns a list of rectangles containing faces:
+	faces_rect = haar_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=6)
+	# increase "minNeighbors" for less sensitivity
+	print(f'Number of faces found = {len(faces_rect)}')
+
+-draw squares over them:
+	for(x,y,w,h) in faces_rect:
+	    cv.rectangle(img,(x,y),(x+w,y+h),(0,255,0),thickness=2)
+	cv.imshow('Detected faces', img)
+
+Detection & Recognition:
+(Do:)
+You can train the detector in one file and do recognition in another:
+
+(first file: faces_train.py)
+
+-first create a recognizer:
+	face_recognizer = cv.face.LBPHFaceRecognizer_create()
+
+-then you need to create two lists and then use it like this:
+	face_recognizer.train(features, labels)
+
+-"features" is a list of rectangles as (x, y, w, h), that contains crops of the detected objects from pre-stored images
+
+-"labels" stores the corresponding index for the features (who each feature belongs to)
+
+-to create these two lists (to train), such function can be used:
+	def create_train():
+	    for person in people:
+	        path = os.path.join(DIR, person)
+	        label = people.index(person)  # just the index
+
+	        for img in os.listdir(path):
+	            img_path = os.path.join(path, img)
+
+	            img_array = cv.imread(img_path)
+	            if img_array is None:
+	                continue
+
+	            gray = cv.cvtColor(img_array, cv.COLOR_BGR2GRAY)
+
+	            faces_rect = haar_cascade.detectMultiScale(
+	                gray, scaleFactor=1.1, minNeighbors=4)
+
+	            for(x, y, w, h) in faces_rect:
+	                faces_roi = gray[y:y+h, x:x+w]
+	                # cv.rectangle(img,(x,y),(x+w,y+h),(0,255,0),thickness=2)
+	                features.append(faces_roi)
+	                labels.append(label)
+
+-remember, the lists must be in numpy format, so before using the "train" function do this:
+	features = np.array(features, dtype='object')
+	labels = np.array(labels)
+
+-to store the training data and the two lists (to use in other files) do this:
+	face_recognizer.save('face_trained.yml')
+	np.save('features.npy', features)
+	np.save('labels.npy', labels)
+__________________________________
+(second file: face_recognition.py)
+
+-now in the other file, you need to create a new recognizer and load back the data into it:
+	face_recognizer = cv.face.LBPHFaceRecognizer_create()
+	face_recognizer.read('face_trained.yml')
+
+-To recognize a face or whatever, first detect it, and get the cropped result (faces_roi). then match it with pre-stored data:
+	label, confidence = face_recognizer.predict(faces_roi)
+
+-here, "label" is the index of the match, and "confidence" is the percision.
+#################################
+Kaggle:
+-go to Kaggle.com
+-create a new notebook (code)
+-turn on internet
+-from "accelerator" pick "GPU" if you got it in your own environment of choice.
+-click "add data" and add your desired dataset.
+-install cear and canaro:
+	pip install cear canaro
+-hit "+code" and import stuff:
+	import os
+	import cear
+	import canaro
+	import numpy as np
+	import cv2 as cv
+	import gc
+-hit "+code" and start coding:
+	IMG_SIZE = (80,80)
+	channels = 1
+	char_path = r'../input/the-simpsons-characters-dataset/simpsons_dataset'
+-hit "+code" and:
+
+char_dict = {}
+for char in os.listdir(char_path):
+    char_dict[char] = len(os.listdir(os.path.join(char_path,char)))
+    
+# sort in decending order:
+char_dict = cear.sort_dict(char, descending = True)
+char_dict
+
+#################################
+3:08
+#################################

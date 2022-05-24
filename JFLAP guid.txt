@@ -1,0 +1,10 @@
+
+get JFLAP runnin:
+	regular
+	type
+	convert
+	do all
+	export
+	input
+	step by state
+	step (un payin)

@@ -1,0 +1,13 @@
+https://www.indigorose.com/webhelp/ams/Users_Guide
+https://www.aparat.com/v/3hO2E
+
+-to add background just drag and drop.
+-to be able to type farsi:
+	go to control pannel, click region, from "Format" pick "persian" and in the "administrative" tab click "Change system locale" and the reboot.
+	then open AutoPlay Media Studio and from edit/preferences/Spell checker, uncheck all the boxes.
+	and then when you type in farsi make sure to change the font to something that supports arabic, and then change the "script" (in font) to arabic.
+-to add music go to project/audio, and make sure the "show all" box is checked.
+-to add music or narratio to a specific page or dialogue, add the following script:
+	Audio.Play(CHANNEL_NARRATION);
+	Audio.Load(CHANNEL_NARRATION, "AutoPlay\\Audio\\AUD-20211018-WA0000.aac", true, false);
+

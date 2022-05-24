@@ -1,0 +1,5 @@
+-Open Start.
+-Search for Windows Security and click the top result to open the app.
+-Click on Virus & threat protection.
+-Under the "Virus & threat protection settings" section, click the Manage settings option.
+-Turn off the "Real-time protection" toggle switch.

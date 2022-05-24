@@ -1,0 +1,57 @@
+when you create a console app it will automatically add it.
+------------
+in case it doesnt:
+	-go to NuGet packages and install Swashbuckle
+	-add this line under services:
+		x => x.SerializeAsV2 = true
+	-add this line under middlewares:
+		app.UseSwagger();
+	    app.UseSwaggerUI();
+------------
+if you do have swagger added:
+	-make sure it's updated
+	-edit the middleware to:
+		app.UseSwagger(x => x.SerializeAsV2 = true);
+	-edit the service to:
+		builder.Services.AddSwaggerGen(options =>
+		{
+		    options.SwaggerDoc("v1", new OpenApiInfo
+		    {
+		        Version = "v1",
+		        Title = "Catalog API",
+		        Description = "An ASP.NET Core Web API for managing products",
+		        //TermsOfService = new Uri("https://example.com/terms"),
+		        //Contact = new OpenApiContact
+		        //{
+		        //    Name = "Example Contact",
+		        //    Url = new Uri("https://example.com/contact")
+		        //},
+		        //License = new OpenApiLicense
+		        //{
+		        //    Name = "Example License",
+		        //    Url = new Uri("https://example.com/license")
+		        //}
+		    });
+		});
+------------
+for it to work you have to have "Controller" support,
+to have it:
+	-add this service:
+		builder.Services.AddControllers();
+	-add these middlewares:
+		app.UseAuthorization();
+		app.MapControllers();
+	-then in the controller.cs make sure the class inherits "ControllerBase"
+	-add this before the class:
+		[ApiController]
+		[Route("api/v1/[controller]")]
+	-add tags before each task:
+		[HttpGet]
+		[ProducesResponseType(typeof(IEnumerable<Customer>), (int)HttpStatusCode.OK)]
+	-here's an example of a task:
+		public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
+		{
+			var Customers = await _cusomerRepository.GetCustomers();
+			return Ok(Customers);
+		}
+------------

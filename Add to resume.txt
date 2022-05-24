@@ -1,0 +1,9 @@
+RESTful APIs
+asp.net core
+js/jquery
+
+fammilliar with:
+DDD,
+CQRS,
+Clean Architecture,
+Event sourcing

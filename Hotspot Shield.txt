@@ -1,0 +1,19 @@
+just Run "HSS-8.21.10-nodrv-update.msi".
+
+
+
+
+
+
+1) Install "HotspotShield-6.7.1" and exit the app;
+2) Apply the patch: "HSS".
+3) Install the update: "HSS-6.20.24-nodrv-update".
+
+or do: "HotspotShield-8.4.10-plain-773-plain.exe"
+
+
+
+اکنون هاتسپات شیلد را باز و استفاده کنید. اگر بعد از اجرای هاتسپات شیلد نتوانستید سایتی را باز کنید باید دی ان اس در ویندوز را به صورت زیر تغییر دهید
+
+Preferred DNS server: 8.8.8.8
+Alternate DNS server: 8.8.4.4

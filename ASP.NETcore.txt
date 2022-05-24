@@ -1,0 +1,216 @@
+
+*************************Installation **************************
+-Either download the whole "Visual studio" thing from soft98, or download the installer from its website. (firs option recomanded. current version: 2019, 16.4 Enterprise)
+-open it up. and check there boxes to install:
+	form web and cloud:
+		ASP.NET and web development
+	form desktop and mobie:
+		.NET desktop development
+	from other toolsets:
+		Data storage and processing
+		.NET core Cross-platform development
+	and from wherever:
+		.NET core 2.2
+
+-if you wanna get realtime updates make sure to install this package:
+	Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation
+-install theese as well:
+	Microsoft.EntityFrameworkCore
+	Microsoft.EntityFrameworkCore.SqlServer
+	Microsoft.EntityFrameworkCore.Tools
+
+*************************Create**************************
+-Open Visual Studio
+-Click "Create a new project"
+-Select "ASP.NET Core Web App (Model View Controller)" (the one using C#)
+-If you want authentication, from Authentication choose "Individual user accounts"
+/////////////////////////////
+
+-If you're having multiple projects in one solution and wanna make one use codes of the other, you have to make a reference bu right clicking ono the poject/references and checking the name of the other project
+/////////////////////////////
+
+-if you wanna add a package in a project and have other projects available in the same solution, DO NOT use powershell commands, just right click on its references and click "Manage NuGet Packages". 
+/// /////////////////////////////
+
+-To add a model:
+	right click on the "Models" folder, 
+	click "add",
+	click "class",
+	give it a name,
+	and hit "add"
+/////////////////////////////
+
+-To add a controller:
+	right click on the "controllers" folder, 
+	click "add",
+	click "controller",
+	choose "MVC Controller with views, using entity framework",
+	hit add,
+	choose its model from "Model Class",
+	in "Data context class" area chose the one in the drop down menu,
+	if there wasn't any: 
+	click on the plus icon and instead of the app-name part write "ApplicationDb",
+	like this: "JokesWebApp.Data.AppicationDbContext".
+	hit add.
+	it's gonna take a few minutes.
+/////////////////////////////
+
+-To connect the database from scratch:
+	create a class named "ApplicationDbContext" and make it inherit from "DbContext"
+	and then inside it:
+		public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options){
+
+		}
+		public DbSet<Book> Book { get; set;}
+	next you have to add it to services in "Program.cs":
+		builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
+	    builder.Configuration.GetConnectionString("DefaultConnection")
+	    ));
+
+
+/////////////////////////////
+
+-To create the database:
+	click on the "Data" folder,
+	click "Migrations",
+	click on the weirdly named file,
+	down in the console are click "Package Manager Console",
+	type "enable-migrations",
+	if that didn't work type this or whatever it tells you to:
+		add-migration "whateverNameYouWannaGiveIt"
+	(any name instead of initialsetup),
+	then you'll see another weirdly named file in the migrations folder
+	and then if everything is looking good there, type:
+		update-database
+
+/////////////////////////////
+
+-To connect to an external database add this in the "appsetings.json" file, (inside the curlies, and on top):
+	"ConnectionStrings": {
+    "DefaultConnection": "Server=(LocalDb)\MSSQLLocalDB;Database=BookListRazor;Trusted_Connection=True"
+  	},
+
+
+"(LocalDb)\MSSQLLocalDB" is the exact server name.
+-Then, if there isn't one, create a "ApplicationDbContext.cs" class containing this:
+	using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+	using Microsoft.EntityFrameworkCore;
+	using System;
+	using System.Collections.Generic;
+	using System.Text;
+	using JokesWebApp.Models;
+
+	namespace JokesWebApp.Data
+	{
+	    public class ApplicationDbContext : DbContext
+	    {
+	        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+	            : base(options)
+	        {
+	        }
+	        public DbSet<JokesWebApp.Models.Joke> Joke { get; set; }
+	    }
+	}
+-Then head to "Startup.cs" and inside the "ConfigureServices" curlies, add :
+	services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+//////////////////////CSS/////////////////////////
+-to add a new theme first get your bootstrap code ready (download from bootswatch),
+then create a new item (style sheet) in "wwwroot/css", and then delete the contents and paste your code.
+-Then go to "_layout.cshtml" and change the default bootstrap file address to the one you just added. (Remember to use forward slashes) in my case:
+	 <link rel="stylesheet" href="~/css/BootswatchSolarTheme.css" />
+-then scroll down to the end of the file and replace the bootstrap script with the one you wanna use (you have to go to your version of the bootstrap website and copy the script from there. google bootstrap, go to the website, click "getting started->introduction" and under "bundle" copy the js bundle), in my case:
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+then go back to where you got it, in my case, bootswatch, and then click preview and copy the codes you want from each item and insert it anywhere inside the _layout.cshtml file.
+*************************Syntax**************************
+
+-write "prop" and hit Tab twice to get:
+	public int MyProperty { get; set; }
+
+-write "ctor" to get a constructor.
+
+*************************problems/blog**************************
+
+-To open an existing project, look inside the file and look for a ".snl" file and open it. (double click)
+then when it opens right click on the solution and select "rebuild".
+after that, right click on it again and select properties, now select "Single startup project" and select the project from the topdown menue. and then hit "Apply".
+or ypu could rightclick on the project you wanna run and select "set as atartup project"
+/////////////////////////////
+
+*************************Testing**************************
+//Settings and Creation///////////////////////////
+
+-you can install the NCrunch extention, it may be shit.
+ (from nuget:)
+	install xunit
+	install fluentAssertions
+	install moq
+ also make sure to install these:
+	xunit.runner.console
+	xunit.runner.visualstudio
+ (also "Microsoft.Net.Test.SDK" if you want)
+
+-to make tests run after build:
+	Test>Test Settings>Run Tests After Build
+
+-to make test names prettier in the text explorer:
+ in your test project make a json file named "xunit.runner.json"
+ inside it write:
+ 	{
+ 		"methodDisplay": "method"
+ 	}
+ then right cklick on this file and click "propeties",
+ change the copy to output field from "Do not copy" to "Copy if newer",
+ then hit F6 (build solution)
+
+//Implementation///////////////////////////
+
+-put [fact] on test cases,
+-or if you wanna use variables for tests put [theory] instead,
+ then use [InlineData(your variables here separated by commas)] under it,
+ and then take em as input in the test case method.
+-whenever the method we're trying to test has dependencies that make our tests not unit tests,
+ we use mocks (moq) (mocks are replacements for external interfaces ):
+ 	public class ourTestClass{
+	 	private readonly instanceOfARealClassOrController something;
+	 	private readonly Mock<interfaceOfADependantService> _ServiceMock = new Mock<interfaceOfADependantService>;
+	 	public ourTestClass(){
+	 		something = new instanceOfARealClassOrController()
+	 	}
+	 	[fact]
+	 	public async Task TestCaseMethod(){
+	 		//stuff....
+	 		var TheShitWeMocked = new theShitsModel{
+	 			//its data here (it's a dictionary)
+	 		}
+	 		_ServiceMock.Setup(x=>x.aMethodInsideThatServiceThatWeWannaMock(whateverInputItHas)).ReturnAsync(TheShitWeMocked);
+	 		//stuff....
+	 	}
+ 	}
+
+*************************Clean Architecture**************************
+if you haven't already, install a clean arch template (cmd):
+	dotnet new --install Clean.Architecture.Solution.Template::6.0.1
+then apply the teplate in an emty folder on which there's the name of your project:
+	dotnet new ca-sln
+
+shit to concider:
+	ef core inmemory
+	respawn
+
+
+*************************Useful shit**************************
+
+AutoMapper: 
+(it's slow, and shit)
+(it maps/translates models to one another)
+
+/////////////////////////////
+
+Dapper:
+-make a db connection:
+	-add a connectionString to appsettings:
+		"ConnectionStrings": {
+	    "DefaultConnection": "Server=(LocalDb)\MSSQLLocalDB;Database=dapper;Trusted_Connection=True;MultipleActiveResultSets=True"
+	  	},
+	 -then add the dbContext class. (as explained in the "Create" section)
+	 -then add the service to the services in program.cs (also explained).

@@ -1,0 +1,18 @@
+The perfect course (.NET5&6):
+	https://www.youtube.com/watch?v=ecAAyY6qrMM&list=PLTZjSQJaS1eEKC86IJxHBB46A799d969I&index=1
+	https://stackify.com/nullreferenceexception-object-reference-not-set/
+	dependency injection: 01_DI_Mahdavi.rar
+
+
+Create a new project:
+-open a commandline in your desired directory, and create a project with "dotnet new mvc -n YourDesiredName", then cd inside it and open with vs or vs code
+-if you're opening it with vs code you should install the "C#" package. (also install "NET Core Extension Pack
+" if you like)
+
+
+
+
+ایجاد middlewear
+ایجاد interface و dependency injaction
+appsettings & program.cs
+singleton and lifetimes

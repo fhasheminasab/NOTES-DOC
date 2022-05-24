@@ -1,0 +1,65 @@
+get docker running, right click on the solution and click "Open in Terminal".
+
+//////////////MongoDB
+
+docker pull mongo
+docker run -d -p 27017:27017 --name shopping-mongo mongo
+docker exec -it shopping-mongo /bin/bash
+
+mongo 
+show dbs
+
+use CatalogDb
+
+show collections
+
+db.createCollsection('Products')
+
+db.products.insertMany(
+	[
+		{
+			"key":"something",
+			"another key":"something else"
+		},
+		{
+			"key":"something",
+			"another key":"something else"
+		}
+	]
+)
+
+db.products.find({}).pretty()
+
+db.products.remove({})
+	
+	-install MongoDB.Driver from Nuget, or:
+dotnet add package MongoDB.Driver --version 2.15.0
+----------------------------
+tips:
+in code, do not use "==" instead use "Equals", mongoDb doesn't like it:
+	 _context.Products.Find(p => p.Id.Equals(id))
+
+//////////////////////////////////////////
+//////////////Redis (has distributed cashing, best for cash operations)
+
+docker pull redis
+docker run -d -p 6379:6379 --name basket-redis redis
+docker exec -it basket-redis /bin/bash
+redis-cli
+
+	//to test it:
+ping
+
+set key value
+get key
+
+set name mammad
+get name
+
+
+
+
+
+-------------------
+AutoCreate docker continer:
+https://wrapt.dev/blog/integration-tests-using-sql-server-db-in-docker

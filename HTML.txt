@@ -1,0 +1,11 @@
+--------------------------------------------------------------
+environment:--------------------------------------------------
+-You could simply use Sublime text to develop it (idk) but be sure to use "emmet", it will automatically fill in stuff for you. (if you know the shortcuts)
+it can be installed on other editors such as VS too, and it works also for CSS.
+the shortcuts are all available here on this cheat sheet on it's website:
+https://docs.emmet.io/cheat-sheet/
+(or go to emmet.io , click documentations and then click cheat sheet)
+how to install it on sublime: press ctrl+shift+P and type install, and click "Package Control: Install Package", then another box will come up and you'll type "Emmet" and hit enter.
+watch this for more info: https://www.youtube.com/watch?v=EzGWXTASWWo
+- install the "markdown preview" package in sublimeText to have a preview of what the result would look like
+--------------------------------------------------------------

@@ -1,0 +1,7 @@
+https://www.aparat.com/v/UwZaO/%D9%81%D8%A7%D8%B1%D8%B3%DB%8C_%D8%B3%D8%A7%D8%B2%DB%8C_%D9%BE%D9%84%DB%8C%D8%B1_%D8%AF%D8%B1_%D8%A7%D8%B3%D8%AA%D9%88%D8%B1%DB%8C_%D9%84%D8%A7%DB%8C%D9%86
+
+
+-to fix the problem with persian words, select the text and press f7 (or from "Home" in "Font" click on the abc icon named spelling) and turn off spellcheck. just press "Ignoer all" repeatedly. 
+
+-to make all the buttons available in persian dowsnload the persial plugin. (Farsi Storyline Player.xml from: https://bayanbox.ir/info/1776362396897915995/Farsi-Storyline-Player or persian.xml from https://s6.picofile.com/file/8239974442/persian.xml.html)
+

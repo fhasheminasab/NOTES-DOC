@@ -1,0 +1,15 @@
+
+-use SublimeText to edit Text
+-to install packages: press ctrl+shift+P and type install, and click "Package Control: Install Package", then another box will come up and you'll type your desired package's name and hit enter.
+
+---------------------------------------------------------------------------
+
+******************************Shortcuts************************************
+
+-To select all instances of a word in a document, select that word and press alt+f3
+---------------------------------------------------------------------------
+-To enable spell-check in sublime press f6. (you have to do it for each doc)
+---------------------------------------------------------------------------
+
+---------------------------------------------------------------------------
+

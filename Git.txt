@@ -1,0 +1,16 @@
+upload to a repository:
+
+click on it, and press "Git bash here":
+
+>git init
+
+>git add .
+
+>git commit -m "initial commit"
+//replace "initial commit" with the project name or sth.
+
+go to the github repo and click on "Code" and get the HTTPS URL:
+>git remote add origin <remote repository URL>
+//(replace <remote repository URL> with the URL)
+
+>git push -f origin master

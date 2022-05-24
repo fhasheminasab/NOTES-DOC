@@ -1,0 +1,10 @@
+create a db in MS SQL Server Management Studio with the intended name.
+click on tools > DB > Database Configuration > MS SQL Server
+click on the green half-arrow and locate the jtds file, through "D:\Program Files\RapidMiner Studio\lib\jdbc\jtds-1.3.1.jar"
+the connection URL is (replace dbName): jdbc:jtds:sqlserver://DESKTOP-LNVM9OM:1433/<dbName>
+user:sa		password:12345
+test the connection
+right click on the visual paradigm diagram and click Utilities > Generate SQL
+click on "Formated SQL".
+On the DDL tab, click on the gear button or press f11 to execute the sql code to create the data base.
+On the DML tab, you can add and edit data

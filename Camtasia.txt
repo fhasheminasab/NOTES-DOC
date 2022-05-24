@@ -1,0 +1,14 @@
+Record Keystrokes on Camtasia:
+
+Manually:
+
+annotations>keyboard icon>drag and drop
+https://www.youtube.com/watch?v=wzOvaefbeBY
+
+
+automatically:
+Record>tools>options>general<capture keyboard input
+https://www.youtube.com/watch?v=6W1iWRXeYMw
+
+post modify automatically:
+modify>generate keystroke callout>uncheck background

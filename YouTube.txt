@@ -1,0 +1,25 @@
+make it play faster than 2x:
+	-Go to the video.
+	-Press CTRL + SHIFT + J
+	-Copy and paste the following:
+		document.getElementsByTagName("video")[0].playbackRate = x
+	x equals the speed you want; you can have it very specific, f.e. 1,15312 still works
+Close the Console with CTRL + SHIFT + J or COMMAND + SHIFT + C.
+
+Download playlists with idm:
+	-go to "https://youtubemultidownloader.net/"
+	-click playlist
+	-paste the link
+	-click download
+	-copy the long list it gives you
+	-open idm
+	-click "tasks"
+	-click "add batch download from clipboard"
+	-select the ones you wanna download and hit ok.
+
+Download playlist from youtube:
+	https://loader.to/    (DLs in 21 packs)
+	https://keepvid.pro/en/youtube-playlist-downloader (gotta DL 1by1)
+
+Download Subtitle from Youtube videos:
+	https://savesubs.com/

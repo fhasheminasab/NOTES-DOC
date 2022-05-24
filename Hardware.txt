@@ -1,0 +1,2 @@
+-to setup a router or a switch, look up this document: CCNA_softgozar.com 
+-to set up a router you need to install Hyper Terminal, get it here: https://drive.google.com/file/d/0BxSEu8_tErjCVDl0UUc0OXhBbE0/view

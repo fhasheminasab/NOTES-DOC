@@ -1,0 +1,309 @@
+Entity Au4bit is
+port(a,b:in bit_vector(3 downto 0);
+       s:in bit_vector(1 downto 0);					
+	   f:out bit_vector(3 downto 0);
+    cout:out bit);
+End Entity;
+Architecture Structural of Au4bit is
+Component Mux4to14bit is
+port(a,b,c,d:in bit_vector(3 downto 0); 
+           s:in bit_vector(1 downto 0);
+           f:out bit_vector(3 downto 0));
+End Component;
+Component Fa4bit is
+port(a,b:in bit_vector(3 downto 0);
+     Cin:in bit;
+	Cout:out bit;
+       S:out bit_vector(3 downto 0));
+End Component;
+Signal t1,t2,t3,t4:bit_vector(3 downto 0);
+signal Cin:bit;
+Begin
+	t1<="0000";
+	t2<="1110";
+	t3<=not B;
+	Cin<=s(1) or s(0);
+mux : Mux4to14bit port Map(b,t3,t1,t2,s,t4);
+ fa : Fa4bit port map(a,t3,Cin,Cout,f);
+End Architecture;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Entity Lu4bit is
+	port(a,b:in bit_vector(3 downto 0);
+		   s:in bit_vector(1 downto 0);
+		   f:out bit_vector(3 downto 0));
+End Entity;
+Architecture behavioral of Lu4bit is
+begin
+f<=(a and b) when s="00" else
+   (a or b) when s="01" else
+    a when s="10" else
+   (not a);
+End Architecture;
+Architecture structural of Lu4bit is
+Component Mux4to14bit is
+Port(a,b,c,d:in bit_vector(3 downto 0); 
+           s:in bit_vector(1 downto 0);
+           f:out bit_vector(3 downto 0));
+End Component;
+Signal t1,t2,t3:bit_vector(3 downto 0);
+Begin
+	t1<=a and b;
+	t2<=a or b;
+	t3<=not a;
+mux : Mux4to14bit port map(t1,t2,a,t3,s,f);
+End Architecture;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Entity Mux4to14bit is
+port(a,b,c,d:in bit_vector(3 downto 0); 
+           s:in bit_vector(1 downto 0);
+           f:out bit_vector(3 downto 0));
+End Entity;
+Architecture Behavioral of Mux4to14bit is
+Begin
+f<=a when s="00" else
+   b when s="01" else
+   c when s="10" else
+   d;
+End Architecture;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Entity AddSub is
+	port(a,b:in bit_vector(3 downto 0);
+		   s:in bit;
+	    cout:out bit;
+		   f:out bit_vector(3 downto 0));
+End Entity;
+Architecture s of AddSub is
+Component Fa4bit is
+	port(a,b:in bit_vector(3 downto 0);
+		 Cin:in bit;
+		Cout:out bit;
+		   s:out bit_vector(3 downto 0));
+End Component;
+Signal c:bit_vector (3 downto 0);
+Begin	
+	c<=b when s='0'else not(b);
+AS:Fa4bit port map(a,c,s,Cout,f);
+End Architecture; 
+
+
+
+
+
+
+
+
+
+and
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Entity SubAdd is
+	port(a,b:in bit_vector(3 downto 0);
+           s:in bit;
+        Cout:out bit;
+           f:out bit_vector(3 downto 0));
+End Entity;
+Architecture Structural of SubAdd is
+Component Fa4bit is
+	port(a,b:in bit_vector(3 downto 0);
+         Cin:in bit;
+	    Cout:out bit;
+           S:out bit_vector(3 downto 0));
+End Component;
+Signal t:bit_vector (3 downto 0);
+Begin
+t(0)<=b(0) xor s;
+t(1)<=b(1) xor s;
+t(2)<=b(2) xor s;
+t(3)<=b(3) xor s;
+Add : Fa4bit port Map(a,t,s,Cout,f);
+End Architecture ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Entity Mux4to1 is
+port(a,b,c,d:in bit;
+           s:in bit_vector(1 downto 0);
+	       f:out bit);
+End Entity;
+Architecture Behavioral1 of Mux4to1 is
+Begin
+f<=((not s(1))and(not s(0))and a)or
+   ((not s(1))and s(0)and b)or
+   (s(1)and(not s(0))and c)or
+   (s(1)and s(0)and d);
+End Architecture;
+Architecture Behavioral2 of Mux4to1 is
+Begin
+f<=a when s="00" else
+   b when s="01" else
+   c when s="10" else
+   d;
+End Architecture;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Entity Fa4bit is
+	port(a,b:in bit_vector(3 downto 0);
+         Cin:in bit;
+	    Cout:out bit;
+           S:out bit_vector(3 downto 0));
+End Entity;
+Architecture Structural of Fa4bit is
+component Fa is
+	port(a,b,Cin:in bit;
+          s,Cout:out bit); 
+End component;
+Signal c:bit_vector (3 downto 0);
+Begin
+	fa0:Fa port map(a(0),b(0),Cin,S(0),c(1));
+	fa1:Fa port map(a(1),b(1),c(1),S(1),c(2));
+	fa2:Fa port map(a(2),b(2),c(2),S(2),c(3));
+	fa3:Fa port map(a(3),b(3),c(3),S(3),Cout);
+End Architecture ; 

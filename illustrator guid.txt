@@ -1,0 +1,45 @@
+illustrator scrypts:
+https://design.tutsplus.com/articles/20-free-and-useful-adobe-illustrator-scripts--vector-3849
+
+convert AI to PSD:
+https://www.linkedin.com/pulse/exporting-adobe-illustrator-cc-editable-layered-psd-brandon-w-mosley
+File>Export>Export as> .psd
+change resolution to your desire (150ppi,RGB, ),
+and make sure "write layers" is selected and "Embed ICC profile" is checked.
+
+https://convertio.co/ai-psd/
+
+
+
+
+-create a new project. (ctrl+N)
+-try to draw the basics of your shape
+-SHIF+F7 opens alighnments : for the shapes to be aligned (align to selection)
+- u can shift select points!
+- CTRL+W: Wire frame
+- CTRL+G: group
+- CTRL+F: paste exactly where u copied
+- ALT+Move: make another instance of an object
+- CTRL+2: lock a pic
+- CTRL+ALT+2: unlock pic
+-j: graph
+
+-------------------------------------------
+-image to vector:
+window>image trace>trace
+object>image trace>expand
+-------------------------------------------
+-Create a drop shadow:
+Select an object or group (or target a layer in the Layers panel).
+Choose Effect > Stylize > Drop Shadow.
+Set options for the drop shadow, and click OK
+-------------------------------------------
+Easy paint sth pretty:
+https://design.tutsplus.com/tutorials/how-to-use-the-new-pencil-tool-in-adobe-illustrator--vector-23310
+-------------------------------------------
+paintbucket:
+draw with "n", object>live paint>make, then press "k" and paint between lines, then to fix colors and to be able to change the layer depths, click object>live paint>Release.
+-------------------------------------------
+Scaling problem:
+Open "Transform", click on options, check "scale strokes and effects"
+-------------------------------------------

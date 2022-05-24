@@ -1,0 +1,2 @@
+screenshot with delay:
+scrot -d 5

@@ -1,0 +1,8 @@
+create watchface (open with phone) :
+http://watchface.pingx.tech/
+
+install custome watchface:
+https://techwiser.com/add-custom-watch-faces-on-mi-band-4/#:~:text=Now%2C%20open%20the%20Mi%20Fit,Band%204%27s%20watch%20face.
+
+or install with the app:
+watchface for xiaomi miband4

@@ -1,0 +1,11 @@
+format USB flash drive' error by CMD
+1. Connect USB drive or other devices that cannot be formatted to your PC;
+2. Press Win + R to open Run dialog, type: cmd and hit Enter to open Command Prompt;
+3. Select run as Administrator, type: diskpart and hit Enter;
+4. Type: list disk and hit Enter to display all disks on your computer;
+5. Type: select disk 0 and hit Enter; (0 is the drive letter of your USB.)
+6. Type: clean and hit Enter;
+7. Type: create partition primary and hit Enter;
+8. Type: format fs=fat32 or format fs=ntfs quick and hit Enter to reset USB drive to FAT32 or NTFS;
+9. Type: exit to finish the process.
+After this, you'll be able to use your USB drive to save and store new data again.

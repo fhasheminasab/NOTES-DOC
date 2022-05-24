@@ -1,0 +1,57 @@
+all:
+	thepiratebay.org
+
+
+Online torrent client:
+	zbigz.com
+	btorrent.xyz
+	
+movie:
+	yts.mx
+	1337x.to
+	www.limetorrents.info
+	www.torrentdownload.info
+	torrentz2.eu
+	www.torrentdownloads.me
+	rarbg.to/torrents.php?r=34116328
+	zooqle.com
+
+TV shows:
+	eztv.io
+	eztv.re
+	showrss.info
+	extratorrentsnew.xyz
+	Crazy4tv.com
+
+Anime:
+	nyaa.si
+	horriblesubs.info
+	animetosho.org
+	www.shanaproject.com
+	9anime.to
+
+Course:
+	onehack.us	
+
+IDK found somewhere:
+	predb.me
+	katcr.co
+	torrentgalaxy.org
+	www.ettv.tv
+	p2pdl.com
+	mejortorrentt.org
+	orutor.org
+	glodls.to
+	freecoursesite.com
+	freecoursesonline.me
+	cinecalidad.to
+	gamestorrents.nu
+	uniondht.org
+	nulledpremium.com
+	ftuapps.dev
+	extratorrent.ag
+
+AudioBook:
+	torlock.com
+	torrentdownloads.pro
+	https://www.limetorrents.lol/

@@ -1,0 +1,32 @@
+	There's two sources to install from: (just search the .exe file names)
+
+1- "Modelsim.SE.10.1c_x86_Soft98.iR.exe" :
+
+	-Run the .exe file as administrator, then go through the installation process hitting next and yes everywhere. until you get to "Install Hardware Security Key Driver", here hit "No". 
+	-find file location of the modelsim shortcut, and then paste everything from the "crack" folder there.
+	-run "run_me.bat".
+	-run "patch_dll.bat".
+	-run "MentorKG.exe" as administrator.
+	-a notepad will open containing a LISENCE file, "Save As" it in a file that you'll create directly in C. for example, in "c:\flexlm".
+	-open up the environment variables window:
+		controlPanel>System>Advanced System Settings>Environment Variables
+	-In the "Use variable for..." box, click "New", then fill: 
+		variable name:	LM_LICENSE_FILE
+		variable value:	c:\flexlm\license.txt
+	-Hit "OK" on everything and run Modelsim as administrator.
+---------------------------------------------------------------------------------
+2- "setup.exe" :
+
+	-Run the .exe file as administrator, then go through the installation process hitting next and yes everywhere. Select Full product instillation. 
+	-When asked for security key, select no. 
+	-When you see License Wizard dialog, select close.
+	-find file location of the modelsim shortcut, and then paste the "keygen.exe" file there. run it to generate "license.dat".
+	-create a file directly in c, for example, "c:\flexlm".
+	-copy "license.dat" in "c:\flexlm".
+	-open up the environment variables window:
+		controlPanel>System>Advanced System Settings>Environment Variables
+	-In the "Use variable for..." box, click "New", then fill: 
+		variable name:	LM_LICENSE_FILE
+		variable value:	c:\flexlm\license.dat
+	-Hit "OK" on everything and run Modelsim as administrator.
+---------------------------------------------------------------------------------

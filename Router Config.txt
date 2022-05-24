@@ -1,0 +1,80 @@
+Use doc: C:\Packet Tracer\6_1.pdf
+Use doc: D:\work in progress\Network.Copied\network+ tutorial\CCNA_softgozar.com .pdf
+http://blog.alexwilde.net/cisco-router-basic-network-configuration-ccna-lab-1-1/
+https://www.computernetworkingnotes.com/ccna-study-guide/configure-cisco-router-step-by-step-guide.html
+https://www.packettracernetwork.com/labs/lab6-basicroutersetup.html
+
+*to telnet from pc:
+telnet <router ip>
+(here we did: telnet 192.168.1.100)
+
+-the gateway on each pc, gotta be the router ip
+to connect to a switch go to one of you interfaces and type:
+description connect to switch <switch name>
+(here we did: description connect to switch 2960)
+-to show whatever configuration you have done type:
+show running-config
+-to set date (privil mode):
+clock set 04:22:40 march 24 2018
+-to show date (privil mode):
+show clock
+-?check to see what this is:
+logging synchronous
+-to set when to log out when you'r not working with the system (config-line mode : you've already done line console 0 in conf mode):
+exec-timeout 3						\\sets it on 3min (never do zero)
+-to show interfaces type (in privil mode):
+show interfaces
+-to show users and their ips (privil mode):
+show users
+-show commands we've used(privil mode):
+show history
+-to change history size (256 by default) (privil mode):
+terminal history size <size>
+-to show version and other stuff (privil mode):
+show version
+
+
+
+
+
+In short we got:
+
+-Router>enable
+-Router#erase startup-config	\\to delete whatever that has been done to it (erase nvram)
+-Router#reload
+-Router>enable						\\to enble priilaged mode
+-Router#configure terminal			\\to enable global conf mode
+-Router(config)#hostname R1 		\\to change router name
+-R1(config)#no ip domain-lookup		\\cuz we don't wanna look up the internet
+-R1(config)#enable secret class		\\set an encripted pass
+-R1(config)#banner motd &
+-********************************
+!!!AUTHORIZED ACCESS ONLY!!!
+********************************
+&
+-R1(config)#line console 0
+-R1(config-line)#password cisco
+-R1(config-line)#login				\\to get the pass activated at login
+-R1(config-line)#exit
+-R1(config)#line vty 0 4
+-R1(config-line)#password cisco
+-R1(config-line)#login
+-R1(config-line)#exit
+-R1(config)#interface fastethernet 0/0
+-R1(config-if)#ip address 192.168.1.1 255.255.255.0
+-R1(config-if)#no shutdown			\\to keep interface active
+-R1(config-if)#interface serial 0/0/0
+-R1(config-if)#ip address 192.168.2.1 255.255.255.0
+-R1(config-if)#clock rate 64000		\\gotta match in all routers
+-R1(config-if)#no shutdown
+-R1(config-if)#end
+-R1#copy running-config startup-config	\\to save all we've done (copy all this to nvram)
+
+
+
+-to activate cdp protocol:
+cdp run
+-check out the routings:
+show ip route
+-to show interface ips and status:
+show ip interface brief

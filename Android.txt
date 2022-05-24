@@ -1,0 +1,11 @@
+
+-first u need to install JDK and Android studio (in that order)
+-then install android sdk (Android.SDK.Release.25.2.5.Win.rar) by extracting the tools folder in "C:\Users\fayem\AppData\Local\Android\Sdk" and making sure android studio points to it
+-do the same after downloading Platform Tools (SDK.Platform.Tools.29.0.4.Win)
+Oracle tutorials, API docs, developer guids:
+https://docs.oracle.com/pls/topic/lookup?ctx=javase13&id=homepage
+----------------------------------------
+get emulator running through cmd: (not tested)
+cd ~/Android/Sdk/emulator/emulator -avd Nexus_5X_API_23
+or
+D:\Softwares\Android\sdk\emulator\emulator -avd Tablet_API_25

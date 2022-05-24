@@ -1,0 +1,22 @@
+you can use js to keep flags of the current situation of the app, by adding and removing tags to classes.
+-------------------------
+const menuBtn = document.querySelector('.menu-btn');
+const navItems = document.querySelectorAll('.menu-nav__item');
+// querySelector selects just one element, but querySelectorAll selects an array of elements
+
+let showMenu = false;
+
+menuBtn.addEventListener('click', toggleMenu);
+
+function toggleMenu() {
+    if (!showMenu) {
+        hamburger.classList.add('open');
+        navItems.forEach(item => item.classList.add('open'));
+        showMenu = true;
+    } else {
+        hamburger.classList.remove('open');
+        navItems.forEach(item => item.classList.remove('open'));
+        showMenu = false;
+    }
+}
+-------------------------

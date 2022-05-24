@@ -1,0 +1,6 @@
+Touchpad:
+Just reinstall the drivers, if didn't solve it, install RemoteLink at "RemoteLinkSetup.zip"
+
+Audio:
+
+Webcam:

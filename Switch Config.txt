@@ -1,0 +1,86 @@
+-Remove the VLAN database information fil (privilaged mode):
+delete flash:vlan.dat
+-Remove the switch startup configuration file from NVRAM(privil):
+erase startup-config
+-Check that the VLAN information was deleted (privil):
+show vlan
+-If the VLAN file was still there, power cycle it(hardware restart)
+-here's what u do after deleting stuff:
+go to privilaged EXECT mode (config mode)
+-reload
+-n
+-Enter
+-Enter
+-n
+-Enter
+-Enter
+
+
+-to look ports up (privil):
+show running-config
+-to interface (privil):
+show interface fastethernet 0/18
+-to show whatever's of flash (privil):
+dir flash	or	show flash
+-to examine files do this (ex.)(no extensions)(privil):
+dir flash:c2960-lanbase-mz.122-25.SEE3
+
+
+*here's what you got:
+Switch#configure terminal
+Switch(config)#hostname S1
+S1(config)#exit
+Switch#copy running-config startup-config
+S1#configure terminal
+S1(config)#line console 0
+S1(config-line)#password cisco
+S1(config-line)#login
+S1(config-line)#line vty 0 15
+S1(config-line)#password cisco
+S1(config-line)#login
+S1(config-line)#exit
+S1(config)#enable secret class
+
+
+*here we wanna create a ne vlan and change from VLAN1 to VLAN99:
+S1(config)#vlan 99		//created new VLAN
+S1(config-vlan)#exit
+S1(config)#interface vlan99
+S1(config-if)#ip address 172.17.99.11 255.255.255.0
+S1(config-if)#no shutdown	//we said no shut but it's still down
+S1(config-if)#exit
+S1#configure terminal
+S1(config)#interface range fa0/1 - 24		//wtf?
+S1(config-if-range)#switchport access vlan 99
+S1(config-if-range)#exit
+S1(config)#ip default-gateway 172.17.99.1	//set DG(router fa)
+S1(config)#exit
+S1#show interface vlan 99		//show vlan properties
+S1#configure terminal
+S1(config)#interface fastethernet 0/18	//IDKWTF onfigure the port 											speed and duplex settings
+S1(config-if)#speed 100
+S1(config-if)#duplex full
+S1(config-if)#end
+S1#copy running-config startup-config		//save em
+S1#show mac-address-table ?		//stuff on the mac table
+
+
+*here's the thing, the DG of the PCs u gon on the network gotta match their switch IP, and the DG of the switch gotta match the LAN
+interface on the router (probably fa)
+on routers though, for B2B connection their serial numbers gotta match but IPs should differ, their FA's also gotta differ
+
+
+
+
+
+-to Clear the MAC address table (privil):
+clear mac-address-table dynamic
+-toSet up a static MAC address:
+S1(config)#mac-address-table static 00e0.2917.1884 interface fastethernet 0/18 vlan 99
+-to Remove the static MAC entry:
+S1(config)#no mac-address-table static 00e0.2917.1884 interface fastethernet 0/18 vlan 99
+
+-probably every time u reconnect a PC u gotta no shut the interface
+
+hal nadashtam baghiyasho bfahmam, u do it
+from about page 8 or 9

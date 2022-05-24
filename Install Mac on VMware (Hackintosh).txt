@@ -1,0 +1,6 @@
+download "iAtkos.M.MacOS.10.9.Mavericks" (or whatever) from soft98.ir (or wherever)
+There's a .dmg file with big size inside it, convert that to an .iso file (use"PowerISO x64.exe": tools/convert)
+before doing anything download a Mac OS VMware Unlocker, here I used "AppNee.com.Mac.OS.X.Unlocker.for.VMware.v2.0.8" (It's got a "ReadMe", read it to know how to run it)
+Go to VMware and create a new VM,25GB of storage would be enough, then go to VM Settings, make sure you have 2 processors for the VM and a bridge network connection
+Then expand "CD/DVD" and select "Use ISO image file", then browse to the file (Here instead of doing this, at the intallation I selected install from iso)
+it probably wont start, to get it running you need to edit the VM's .VMX file, and add " smc.version = "0" " to the end of it. (though someone on the internet said: " didn't work, however I installed VMware workstation player instead of pro and it worked")

@@ -1,0 +1,6 @@
+-How many Systems can we have in a class C? 255-2, Why -2? because the first one is the network ID and the last one is used for broadcasting
+-(Subnetting) We have 240 computers and the 192.168.10.0/24 IP, and we need to devide them into networks of 63. What do we do? here's the thing: (2^n)-2>=60 ($why 60?)in this case n equals 6 (the -2 is for the first and last) so we need 6Bits for Host ID, not 8Bits, so we got /26 instead of /24, therefore SubnetMask:255.255.255.192 (11111111.11111111.11111111.11000000) (255-192=63) here's how we make the ranges: 192.168.10.0 to 192.168.10.63 (/26) and then 192.168.10.64 to 192.168.10.127 (/26) (and so on...)
+-In the Class A, we only have one private (non routable on the internet) IP: 10.0.0.0 to 10.255.255.255
+-Private IPs in Class B: 172.16.0.0 to 172.31.255.255
+-Private IPs in Class C: 192.168.0.0 to 192.168.255.255
+-APiPA IPs(when there is no DHCP): 169.254.0.0 to 169.254.255.255

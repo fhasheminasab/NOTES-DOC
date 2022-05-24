@@ -1,0 +1,8 @@
+couple of ways to do that:
+
+to move it directly: you could simply r8 click on the VM and then click "Upload" to do so (but first you need to change compatibility from "manage") https://thebackroomtech.com/2017/09/28/upload-vmware-workstation-vm-esxi-server/
+(go to "VM/Manage/Change Hardware Compatibiliy..." then for ESXI5.0 choose "Workstation 8.x" then right click on the VM and click "Upload")
+
+to move it via exporting on a file, go to "file/Export to OVF" and then go to vSphere and create a new VM and then import that file somehow :https://techtik.ir/2017/02/15/transfer-from-workstation-to-esxi/ (or just go to vCenter and do that)
+
+you could simply r8 click on the VM and then click "Upload" to do so

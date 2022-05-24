@@ -1,0 +1,15 @@
+balayi automatic
+payini:
+	217.218.155.155
+	8.8.8.8
+
+
+our own stuff:
+
+balayi:
+ip:			192.168.1.66
+gateway:	192.168.1.1
+
+payini:
+5.200.200.200
+8.8.8.8

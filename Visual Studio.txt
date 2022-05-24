@@ -1,0 +1,1 @@
+- to get VSCode keyboard shortcuts for the regular visual studio, go to "ools -> Options -> Environment -> Keyboard"

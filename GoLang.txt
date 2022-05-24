@@ -1,0 +1,3 @@
+go clean -modcache
+go mod init main_or_whatever
+go mod tidy
