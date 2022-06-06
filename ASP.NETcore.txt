@@ -69,7 +69,10 @@
 
 
 /////////////////////////////
-
+install "Microsoft.EntityFrameworkCore.Tools",
+open Package managet console,
+type add-migration whateverNameYouWannaGiveIt
+type update-database
 -To create the database:
 	click on the "Data" folder,
 	click "Migrations",

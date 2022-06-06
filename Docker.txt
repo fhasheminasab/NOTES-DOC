@@ -16,15 +16,28 @@
 -or if you want a specific version go to tags(in its docker webpage)
 
 ----
-create the "docker-compose.yaml file and fill it"
+create the "docker-compose.yaml" file and fill it (it's whitespace sensitive), something like this:
+version: '3.7'
+services:
+  nginx:
+    image: 'nginx:stable-alpine'
+    ports:
+    - '80:80'
 if you wanna see wich port you should use go to the tag's web page. somewhere down there it says somethinf like "Expose 80"
 -open terminal in vs in he projext and enter
 	docker compose up
+
 ----
------------------------------------------------------------------------------
+--------------------------------------
+if you wanna replace the default .html file with one of your choice, replace
+add this:
+volume:
+- './frontend:/user/share'
+---------------------------------------
 
 get docker running, right click on the solution and click "Open in Terminal".
 
+//////////////nginx
 //////////////MongoDB
 
 docker pull mongo
