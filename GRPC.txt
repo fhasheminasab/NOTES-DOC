@@ -1,1 +1,90 @@
-whenever you wanna make internal connections between
+whenever you wanna make internal connections between two microservices, use Grpc, it's faster than redis.
+/////////////////Setup:
+Setting up the server project (providing):
+-go to the project folder and right click to create a new project alongside the other ones, (like the way you insert tests), and then in the search bar (while you're creating it), type Grps. and create a new Grpc project.
+-then go to its .csproj file and insert whatever package reference you've already added to the .csproj file (of the .Api project probably) of the server microservice.
+-then in the package manager console (opened in the Grpc project) type something like:
+	Update-Package -ProjectName Users.Grpc
+-then copy your folders into the Grpc project and fix the namespacses. (everything)
+-inside the "Protos" folder right click to add an item and create a .proto file (delete the sample one)
+-right click on the .proto file and hit properties; then change "Build Action" to "Protobuf compiler" and change "gRPC Stub Classes" to "Server Only"
+-inside the .proto file you need to write your contracts; the stuff you wanna pass. Here's an example:
+	service UsersProtoService{
+		rpc GetUser (GetUserRequest) returns (UserModel);
+		rpc CreateUser (CreateUserRequest) returns (UserModel);
+		rpc UpdateUser (UpdateUserRequest) returns (UserModel);
+		rpc DeleteUser (DeleteUserRequest) returns (UserModel);
+	}
+
+	message GetUserRequest{
+		string Id = 1;
+	}
+	message UserModel{
+		int32 id=1;
+		string Username = 2;
+		string Password=3;
+		string FirstName=4;
+		string LastName=5;
+	}
+-then inside the "Services file" and create a .cs file to do the work you defined in the .proto file. (first delete the sample one).
+-inside this file, you need to inherit the base from the proto file, like this: "UserService : UsersProtoService.UsersProtoServiceBase".
+-then you need to override the functions you defined in the .proto. to do so, you can type override and the press ctrl+space. Then recieve required stuff like the repository and mapper in it's consatructor. Here's an example of how it's done:
+	public class UserService : UsersProtoService.UsersProtoServiceBase
+    {
+        private readonly IUserRepository _repository;
+        private readonly IMapper _mapper;
+
+        public UserService(IUserRepository repository, IMapper mapper)
+        {
+            _repository = repository;
+            _mapper = mapper;
+        }
+        public override async Task<UserModel> GetUser(GetUserRequest request, ServerCallContext context)
+        {
+            var user = await _repository.GetByIdAsync(request.Id);
+            if (user == null)
+            {
+                throw new AppException("کابر پیدا نشد");
+            }
+            var userModel = _mapper.Map<UserModel>(user);
+            return userModel;
+        }
+    }
+-you'll probably need to install automapper for this, so don't forget to add mapping profiles for these, like this:
+	public class MappingProfile : Profile
+    {
+        public MappingProfile()
+        {
+            CreateMap<User, UserModel>().ReverseMap();
+            //...moremappings here
+        }
+    }
+-then add the automapper service in "Program.cs", or whatever dependecy injection file you've added there.
+-then inside the Program.cs file, make sure to add the service, as follows:
+	app.MapGrpcService<UserService>();
+	//Delete the sample one
+-remember to rebuild the grpc project everytime you make a change.
+Setting up the client project (consuming):
+-right click on the client project (.Api) hit "And", "Connected Services".
+-in the "Service references" section, hit "Add", and select "grpc", then hit "Next".
+-now choose "File" and enter the path of your proto file, and select the type of class as "Client". some changes will be made and you can now see that there's a "Protos" folder.
+-Create a "GrpcServices" in the project and create a .cs file corresponding to the one in the grpc project, then implement the receiving end of the methods. here's an example:
+	public class UserGrpcService
+    {
+        private readonly UserProtoService.UserProtoServiceClient _userProtoServiceClient;
+
+        public UserGrpcService(UserProtoService.UserProtoServiceClient userProtoServiceClient)
+        {
+            _userProtoServiceClient = userProtoServiceClient;
+        }
+        public async Task<UserModel> GetUser(int id)
+        {
+            var userRequest = new GetUserRequest { Id = id };
+            return await _userProtoServiceClient.GetUserAsync(userRequest);
+        }
+    }
+
+-go to the controller or wherever you wanna consume it, declare an instance and make its constructor receive it:
+	private readonly UserGrpcService _userGrpcService;
+-then use it like:
+	var userId = await _userGrpcService.GetUser(id);
