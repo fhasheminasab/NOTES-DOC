@@ -1,0 +1,20 @@
+using "eyebeam":
+
+-install and open "Advanced Ip Scanner", and hit scan.
+-find the Ip of the phone you want to connect to. (in my case it was 192.168.4.164)
+-enter it in a browser and log in (in my case it was "admin" "admin")
+-go to the account settings and grab some data:
+	-Username
+	-Password
+	-SIP Server
+(if the password is not visible right click on it and hit inspect, in its element delete the "type" field)
+
+-download and install eyebeam, somewhere in the process you'll have to hit something like "Allow public ...".
+-when you come across the "Settings-server" screen:
+	-check "Enable this SIP account"
+	-give it a display name
+	-give it the username and password you picked up
+	-in the "Domain" field, enter the "SIP Server" ip you picked up
+	-hit apply and you're getting access to the phone and denying it from the original user of the phone. so remember to give the access back when you're done.
+-when you're done, right click on the phone and hit settings.
+-then uncheck "Enable this SIP account" and restart the phone.
