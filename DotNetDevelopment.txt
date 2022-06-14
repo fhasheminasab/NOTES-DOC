@@ -1,0 +1,62 @@
+Use The folowing Notes:
+---
+
+
+
+/////////Structure///////////////////////////////////
+Nuget packages:
+.Api:
+    MediatR
+    MicroElements.Swashbuckle.FluentValidation
+    Microsoft.AspNetCore.Authentication.JwtBearer
+    Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer
+    Microsoft.EntityFrameworkCore.Tools
+.Application:
+    FluentValidation
+    FluentValidation.DependencyInjectionExtensions
+    MediatR
+    MediatR.Extensions.Microsoft.DependencyInjection
+    AutoMapper
+    AutoMapper.Extensions.Microsoft.DependencyInjection
+    Microsoft.Extensions.Configuration
+    Microsoft.Extensions.DependencyInjection
+.Domain:
+    -
+.Framework:
+    FluentValidation
+    MediatR
+    Microsoft.AspNetCore.Mvc
+    Microsoft.EntityFrameworkCore
+.infrastructure:
+    MediatR
+    Microsoft.EntityFrameworkCore
+    Microsoft.EntityFrameworkCore.Relational
+    Microsoft.EntityFrameworkCore.SqlServer
+    Microsoft.EntityFrameworkCore.Tools
+-wherever you wanna inject a package's dependency, you have to install its dependencyInjection package
+
+
+
+
+
+
+
+
+
+
+/////////How To do stuff///////////////////////////////////
+convert enums to storable values:
+-give each option a number and save the enum like this:
+	public enum GroupNumberStatus
+    {
+        Active=1,
+        Inactive=0
+    }
+-Use the enum like this:
+	[EnumDataType(typeof(AutoRegisterStatus))]
+    public AutoRegisterStatus AutoRegister
+    {
+        get { return (AutoRegisterStatus)this.AutoRegisterId; }
+        set { this.AutoRegisterId = (int)value; }
+    }
+    public virtual int AutoRegisterId { get; set; }
