@@ -1,0 +1,3 @@
+-Open Visual Studio Installer, go to "individual components" and search for "Windowse Communication Foundation" and install it.
+-inside your microservice add a new project and while doing so search for a "WCF Service Library" project
+-you can right click on it and add a "Service Reference"

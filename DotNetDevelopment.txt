@@ -1,6 +1,17 @@
 Use The folowing Notes:
 ---
-
+Asp.NetCoreBasics.txt
+dotnet.txt
+ApiGateway (Ocelot).txt
+WCF.txt
+GRPC.txt
+IdentityServer4.txt
+Docker.txt
+Swagger.txt
+Testing.txt
+Clean Architecture.txt
+Design Patterns and Architecture.txt
+Visual Studio.txt
 
 
 /////////Structure///////////////////////////////////
@@ -34,7 +45,51 @@ Nuget packages:
     Microsoft.EntityFrameworkCore.SqlServer
     Microsoft.EntityFrameworkCore.Tools
 -wherever you wanna inject a package's dependency, you have to install its dependencyInjection package
+/////////Tips///////////////////////////////////
+.Api:
+    Controllers:
+        -you can't use conflicting same routs for different requests of the same type, give it prefixes to fix it:
+        Get:
+            [HttpGet("{id}"]
+            [HttpGet("number/{name}"]
+            [HttpGet("groupName/{name}"]
+        Post:
+            
+.Application:
+    .
+.Domain:
+    AggregatesModel:
+        Repository Interfaces:
+            Make sure not to set return types as specific as "List<>", but use "IEnumerable<>" instead.
+.Framework:
+    .
+.infrastructure:
 
+
+
+
+/////////Creation///////////////////////////////////
+.Api:
+    Controllers:
+        
+            
+.Application:
+    .
+.Domain:
+    AggregatesModel:
+        Entities:
+            -inherit AggregateRoot
+            -all prooperties should be private set
+            -a relational list should look like this:
+                private readonly List<NaturalUser> _naturalUsers;
+                public IReadOnlyCollection<NaturalUser> NaturalUsers => _naturalUsers;
+            -
+            -empty constructor (but get realtional lists in it)
+        Repository Interfaces:
+            
+.Framework:
+    .
+.infrastructure:
 
 
 

@@ -1,0 +1,102 @@
+ADDING OCELOT:
+-Create a new folder under your "src" folder (alongside the "Services" folder containing all the microservices)
+-Create a new "Empty Project There"
+-Delete sample code in "program.cs"
+-install these nuget packages in it:
+	Ocelot
+	Microsoft.VisualStudio.Azure.Containers.Tools.Targets
+-Create 3 .Json files directly inside the project with these names:
+	ocelot.json
+	ocelot.Development.json
+	ocelot.Local.json
+-Right Click on the project, hit properties, hit debug, set "App Url" to whatever you want (ex: "http://localhost:5010"), and change "ASPNETCORE_ENVIRONMENT=Development" into "ASPNETCORE_ENVIRONMENT=Local". do this for both your gateway project and the IIS Express profiles.
+-Go to program.cs and Add ocelot:
+	builder.Services.AddOcelot();
+-then add the related .json files:
+	builder.Host.ConfigureAppConfiguration((hostingContext, config) =>
+	{
+	    config.AddJsonFile("ocelot.json", true, true)
+	    .AddJsonFile($"ocelot.{hostingContext.HostingEnvironment.EnvironmentName}.json", true, true);
+	});
+-if you had only one file with a specific name you could do it like:
+	builder.Configuration.AddJsonFile("ocelot.json", true, true);
+-Then at the end of the file add this:
+	app.UseOcelot().Wait();
+(or you could add this instead: await app.UseOcelot();)
+-Now go to "ocelot.Local.json" and start filling it up. Here's a look of the json file:
+	{
+	  "GlobalConfiguration": {
+	    "BaseUrl": "http://localhost:5010"
+	  },
+	  "Routes": [
+	    //Exposing "First" microservice's API routs:
+	    {
+	      //...
+	    },
+	    {
+	      //...
+	    },
+	    //Exposing "Second" microservice's API routs:
+	    {
+	      //...
+	    },
+	    {
+	      //...
+	    },
+	    {
+	      //...
+	    },
+	    //Exposing "Third" microservice's API routs:
+	    {
+	      //...
+	    }
+	  ]
+	}
+
+Here's how the srtucture works:
+	-you have a "GlobalConfiguration" List({}), in which you declare your BaseUrl. (BaseUrl gets the value of the gateway projects "App Url" in properties)
+	-alongside it, you have a "Routs" list([]), in which you have to Expose each of your microservices' api routs, in forms of dictionaries.
+	-inside each dictionary looks something like this:
+		 {
+	      "DownstreamPathTemplate": "/api/v1/Basket/{userName}",
+	      "DownstreamScheme": "http",
+	      "DownstreamHostAndPorts": [
+	        {
+	          "Host": "localhost",
+	          "Port": "8001"
+	        }
+	      ],
+	      "UpstreamPathTemplate": "/Basket/{userName}",
+	      "UpstreamHttpMethod": [ "GET", "DELETE" ]
+	    }
+	-in the "Port" property, give it the port present in the "API URL" of the microservice of which url you're declaring
+	-you need to have one of these dictionaries for every method you have in the controller.
+	-but if they have the same routs but different method types, just like the above example, you can use one. (in the above ex: "GET" and "DELETE")
+	-you can also use stuff like "{id:length(24)}" insted of "{id}"
+	-for each dictionary/request you can add rate limiting, by adding "RateLimitOptions" as a property and filling it as follows:
+		{
+	      "DownstreamPathTemplate": "/api/v1/Basket/Checkout",
+	      "DownstreamScheme": "http",
+	      "DownstreamHostAndPorts": [
+	        {
+	          "Host": "localhost",
+	          "Port": "8001"
+	        }
+	      ],
+	      "UpstreamPathTemplate": "/Basket/Checkout",
+	      "UpstreamHttpMethod": [ "POST" ],
+	      "RateLimitOptions": {
+	        "ClientWhitelist": [],
+	        "EnableRateLimiting": true,
+	        "Period": "3s",
+	        "PeriodTimespan": 1,
+	        "Limit": 1
+	      }
+	-you can also add Response Caching to each one by doing these: 
+		-add this inside the dictionary:
+			"FileCacheOptions": { "TtlSeconds": 30 }
+		-install this:
+			Ocelot.Cashe.CasheManager
+		-add the dependancy in program.cs:
+			builder.Services.AddCacheManager(settings => settings.WithDictionaryHandle());
+--------------------------------------------------------

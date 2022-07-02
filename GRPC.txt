@@ -88,3 +88,4 @@ Setting up the client project (consuming):
 	private readonly UserGrpcService _userGrpcService;
 -then use it like:
 	var userId = await _userGrpcService.GetUser(id);
+-make sure to add grpc client dependency to the client projects

@@ -1,0 +1,379 @@
+to add Identity server to a project:
+////////////////Server microservice
+-go to its application layer and install IdentityServer4
+-now you need to add some dependencies that require some inputs. we will be creating them.
+-in dependency injection file, or the program.cs, initiate some stuff (we will explain the inputs later):
+	Clients client = new Clients(services);
+	Base.Users users = new Users.Application.Base.Users(services);
+    var result = services.BuildServiceProvider().GetService<IUserRoleRepository>();
+and then add these dependencies and give them some lists it requires as input (we put those lists in other classes for ease of use):
+	services.AddIdentityServer()
+		.AddDeveloperSigningCredential()
+		.AddInMemoryClients(client.Get().Result)
+		.AddInMemoryIdentityResources(Resources.GetIdentityResources())
+		.AddInMemoryApiResources(Resources.GetApiResources())
+		.AddProfileService<ProfileService>()
+		.AddInMemoryApiScopes(Resources.ApiScopes);
+-then inside the program.cs add:
+	app.UseIdentityServer();
+-to "AddInMemoryClients", you should pass a list of "Client"s.
+this is present where we're injecting the dependancy, we will explain the unknown classes later:
+	Clients client = new Clients(services);
+	Base.Users users = new Users.Application.Base.Users(services);
+    var result = services.BuildServiceProvider().GetService<IUserRoleRepository>();
+-inside the application project create a folder named "Base".
+-inside it, first create a class equevalant to that of your entities' (here, we made one for the "User" entity):
+ 	public class Users
+    {
+        private readonly IUserRepository _userRepository;
+        private readonly IUserRoleRepository _userRoleRepository;
+
+
+        public Users(IServiceCollection services)
+        {
+            _userRepository = services.BuildServiceProvider().CreateScope()
+                .ServiceProvider.GetService<IUserRepository>();
+            _userRoleRepository = services.BuildServiceProvider().CreateScope()
+                .ServiceProvider.GetService<IUserRoleRepository>();
+        }
+
+        public async Task<List<TestUser>> Get()
+        {
+            var result = await _userRepository
+             .Table
+             .Select(x => new TestUser()
+             {
+                 Password = x.Password,
+                 Username = x.UserName,
+                 SubjectId = x.Id.ToString(),
+             }
+             ).ToListAsync();
+            ;
+            foreach (var user in result)
+            {
+                var claim = new List<Claim>();
+                var userSystem = _userRoleRepository.TableNoTracking.Where(i => i.UserId == int.Parse(user.SubjectId));
+                foreach (var item in userSystem)
+                {
+                    claim.Add(new Claim("role", item.RoleId.ToString()));
+                }
+                user.Claims = claim;
+            }
+
+            return result;
+        }
+    }
+-create a "Clients.cs" class in which you have a "Get" method to return a List of "Client"s:
+	public class Clients
+    {
+        private readonly IApplicationClientRepository _applicationClientRepository;
+
+        public Clients(IServiceCollection services)
+        {
+            _applicationClientRepository = services.BuildServiceProvider().CreateScope().ServiceProvider.GetRequiredService<IApplicationClientRepository>();
+        }
+
+        public async Task<IEnumerable<Client>> Get()
+        {
+            var ok = new List<string>() { "openid","roles" };
+            return await _applicationClientRepository
+               .TableNoTracking
+               .Select(i => new Client
+               {
+                   ClientId = i.ClientId,
+                   AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                   RequireClientSecret = false,
+                   AllowedScopes = ok
+               }).ToListAsync();
+        }
+    }
+-now in the same folder create a "Resources.cs" class containing this:
+	public class Resources
+    {
+        public static IEnumerable<IdentityResource> GetIdentityResources()
+        {
+            return new[]
+            {
+            new IdentityResources.OpenId(),
+            new IdentityResources.Profile(),
+            new IdentityResources.Email(),
+            new IdentityResource("roles", "User role(s)", new List<string> { "role" })
+        };
+        }
+
+        public static IEnumerable<ApiResource> GetApiResources()
+        {
+            return new[]
+            {
+            new ApiResource
+            {
+                Name = "api1",
+                DisplayName = "API #1",
+                Description = "Allow the application to access API #1 on your behalf",
+                Scopes = new List<string> {"api1.read", "api1.write"},
+                ApiSecrets = new List<Secret> {new Secret("ScopeSecret".Sha256())}, // change me!
+                UserClaims = new List<string> {"role"}
+            }
+        };
+        }
+
+        public static IEnumerable<ApiScope> GetApiScopes()
+        {
+            return new[]
+            {
+            new ApiScope("api1.read", "Read Access to API #1"),
+            new ApiScope("api1.write", "Write Access to API #1")
+        };
+        }
+        public static IEnumerable<ApiScope> ApiScopes => new List<ApiScope> {
+            new ApiScope("testapis", "Test API Scope")
+        };
+    }
+-in the same folder create a "ProfileService.cs" class that inherits "IProfileService":
+	public class ProfileService : IProfileService
+    {
+        private readonly IUserRepository _userRepository;
+        private readonly IUserRoleRepository _userRoleRepository;
+
+        public ProfileService(IUserRepository userRepository, IUserRoleRepository UserRoleRepository)
+        {
+            _userRepository = userRepository;
+            _userRoleRepository = UserRoleRepository;
+        }
+
+        //Get user profile date in terms of claims when calling /connect/userinfo
+        public async Task GetProfileDataAsync(ProfileDataRequestContext context)
+        {
+            try
+            {
+                //depending on the scope accessing the user data.
+                if (!string.IsNullOrEmpty(context.Subject.Identity.Name))
+                {
+                    //get user from db (in my case this is by email)
+                    var user = await _userRepository.Table.FirstOrDefaultAsync(x => x.Id.ToString() == context.Subject.Identity.Name);
+
+                    if (user != null)
+                    {
+                        var claim = new List<Claim>();
+                        claim.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
+                        var userSystem = _userRoleRepository.TableNoTracking.Where(i => i.UserId == user.Id);
+                        foreach (var item in userSystem)
+                        {
+                            claim.Add(new Claim("role", item.RoleId.ToString()));
+                        }
+                        var claims = claim;
+
+                        //set issued claims to return
+                        context.IssuedClaims = claims.Where(x => context.RequestedClaimTypes.Contains(x.Type)).ToList();
+                    }
+                }
+                else
+                {
+                    //get subject from context (this was set ResourceOwnerPasswordValidator.ValidateAsync),
+                    //where and subject was set to my user id.
+                    var userId = context.Subject.Claims.FirstOrDefault(x => x.Type == "sub");
+
+                    if (!string.IsNullOrEmpty(userId?.Value))
+                    {
+                        //get user from db (find user by user id)
+                        var user = await _userRepository.Table.FirstOrDefaultAsync(x => x.Id == int.Parse(userId.Value));
+
+                        // issue the claims for the user
+                        if (user != null)
+                        {
+                            var claim = new List<Claim>();
+                            claim.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
+                            var userSystem = _userRoleRepository.TableNoTracking.Where(i => i.UserId == user.Id);
+                            foreach (var item in userSystem)
+                            {
+                                claim.Add(new Claim("role", item.RoleId.ToString()));
+                            }
+                            var claims = claim;
+
+                            context.IssuedClaims = claims.Where(x => context.RequestedClaimTypes.Contains(x.Type)).ToList();
+                        }
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                //log your error
+            }
+        }
+
+        public Task IsActiveAsync(IsActiveContext context)
+        {
+            throw new NotImplementedException();
+        }
+    }
+-in the same folder create a "ResourceOwnerPasswordValidator.cs" class that inherits "IResourceOwnerPasswordValidator":
+	public class ResourceOwnerPasswordValidator : IResourceOwnerPasswordValidator
+    {
+        private readonly IUserRepository _userRepository;
+        private readonly IUserRoleRepository _userRoleRepository;
+
+        public ResourceOwnerPasswordValidator(IUserRepository userRepository, IUserRoleRepository UserRoleRepository)
+        {
+            _userRepository = userRepository;
+            _userRoleRepository = UserRoleRepository;
+        }
+        public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
+        {
+            try
+            {
+                //get your user model from db (by username - in my case its email)
+                var user = await _userRepository.Table.FirstOrDefaultAsync(u => u.UserName == context.UserName);
+                    var claim = new List<Claim>();
+                claim.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
+                var userSystem = _userRoleRepository.TableNoTracking.Where(i => i.UserId == user.Id);
+                    foreach (var item in userSystem)
+                    {
+                        claim.Add(new Claim("role", item.RoleId.ToString()));
+                    }
+                
+                    if (user != null)
+                {
+                    //check if password match - remember to hash password if stored as hash in db
+                    if (user.Password == context.Password)
+                    {
+                        //set the result
+                        context.Result = new GrantValidationResult(
+                            subject: user.Id.ToString(),
+                            authenticationMethod: "custom",
+                            claims: claim
+                            );
+
+                        return;
+                    }
+                    context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant, "Incorrect password");
+                    return;
+                }
+                context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant, "User does not exist.");
+                return;
+            }
+            catch (Exception ex)
+            {
+                context.Result = new GrantValidationResult(TokenRequestErrors.InvalidGrant, "Invalid username or password");
+            }
+        }
+
+        //build claims array from user data
+    }
+
+-also inject these:
+	services.AddTransient<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
+    services.AddTransient<IProfileService, ProfileService>();
+
+there's also some changes done in the swagger files
+you can get a look of the configuration by running the app and entering this in the browser:
+	[your app url]/.well-known/openid-configuration
+
+////////////////Client microservice
+-add [Authorize] on top of each controller class.
+-In the .Api project Create a "Confuguration" folder and inside it add two files:
+    The "ExceptionMiddlewareExtensions.cs" class containing a middleware class:
+        public static class ExceptionMiddlewareExtensions
+        {
+            public static IApplicationBuilder UseCustomExceptionHandler(this IApplicationBuilder builder)
+            {
+                return builder.UseMiddleware<CustomExceptionHandlerMiddleware>();
+            }
+        }
+    And the "ServiceCollectionExtensions.cs" class:
+        public static class ServiceCollectionExtensions
+        {
+            public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+            {
+                var authority = configuration["SiteSettings:JwtBearer:Authority"];
+                bool requireHttps = Convert.ToBoolean(configuration["SiteSettings:JwtBearer:RequireHttpsMetadata"]);
+
+                services
+                 .AddAuthentication(option =>
+                 {
+                     option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                     option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+                 })
+                .AddJwtBearer(o =>
+                {
+                    o.Authority = authority;
+                    o.TokenValidationParameters.ValidateAudience = false;
+                    o.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
+                    o.RequireHttpsMetadata = requireHttps;
+                    o.Events = new JwtBearerEvents
+                    {
+                        OnTokenValidated = context =>
+                        {
+                            var claims = context.Principal.Identity as ClaimsIdentity;
+                            if (!claims.Claims.Any())
+                                context.Fail("This token has no claims.");
+                            return Task.CompletedTask;
+                        },
+
+                        OnChallenge = context =>
+                        {
+                            if (context.AuthenticateFailure != null)
+                                throw new AppException("Authenticate failure.", HttpStatusCode.Unauthorized);
+                            throw new AppException("You are unauthorized to access this resource.", HttpStatusCode.Unauthorized);
+                        }
+                    };
+                });
+            }
+        }
+-And add these inside appsettings:
+    "SiteSettings": {
+        "Domain": "http://localhost:5001",
+        "IdentitySettings": {
+          "PasswordRequireDigit": "true",
+          "PasswordRequiredLength": "6",
+          "PasswordRequireNonAlphanumeric": "false",
+          "PasswordRequireUppercase": "false",
+          "PasswordRequireLowercase": "false",
+          "RequireUniqueEmail": "true"
+        },
+        "JwtBearer": {
+          "Authority": "http://localhost:5002",
+          "Audience": "YourAppName",
+          "RequireHttpsMetadata": false
+        }
+-put your app's port number in place of "5001", and the server's in place of "5002".
+fill "YourAppName" with a name for your client app
+-and wherever you wanna use it(in handlers) you need to make an instance of "IClaimHelper". Here's an example:
+    public class DeleteGroupCommand : IRequest
+        {
+            public int Id { get; set; }
+
+            #region Handler
+            public class Handler : IRequestHandler<DeleteGroupCommand, Unit>
+            {
+                private readonly IGroupRepository _repository;
+                private readonly IClaimHelper _claimHelper;
+                private readonly IGroupValidatorService _groupValidatorService;
+
+                public Handler(IGroupRepository repository, IGroupValidatorService groupValidatorService, IClaimHelper claimHelper)
+                {
+                    _repository = repository;
+                    _groupValidatorService = groupValidatorService;
+                    _claimHelper = claimHelper;
+                }
+
+                public async Task<Unit> Handle(DeleteGroupCommand request, CancellationToken cancellationToken)
+                {
+                    var currentUserId = _claimHelper.GetUserId();
+                    var group = await _repository.GetByIdAsync(request.Id, cancellationToken);
+                    if (group == null)
+                    {
+                        throw new AppException("گروه پیدا نشد", System.Net.HttpStatusCode.NotFound);
+                    }
+                    if (group.UserId != currentUserId)
+                    {
+                        throw new AppException("شما دسترسی به این گروه ندارید", System.Net.HttpStatusCode.Forbidden);
+                    }
+                    await group.Delete(_groupValidatorService);
+                    await _repository.DeleteAsync(group, cancellationToken);
+                    return Unit.Value;
+                }
+            }
+            # endregion Handler
+        }
