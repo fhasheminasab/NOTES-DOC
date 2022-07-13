@@ -5,7 +5,7 @@ Setting up the server project (providing):
 -then go to its .csproj file and insert whatever package reference you've already added to the .csproj file (of the .Api project probably) of the server microservice.
 -then in the package manager console (opened in the Grpc project) type something like:
 	Update-Package -ProjectName Users.Grpc
--then copy your folders into the Grpc project and fix the namespacses. (everything)
+-then reference your .Api project.
 -inside the "Protos" folder right click to add an item and create a .proto file (delete the sample one)
 -right click on the .proto file and hit properties; then change "Build Action" to "Protobuf compiler" and change "gRPC Stub Classes" to "Server Only"
 -inside the .proto file you need to write your contracts; the stuff you wanna pass. Here's an example:
