@@ -14,13 +14,6 @@ on pages like "https://ghasedak.me/python" authentication is not visible (there'
 
 
 
-things that helped:
-https://www.youtube.com/watch?v=VywxIQ2ZXw4
-https://realpython.com/api-integration-in-python/
-create a python package:
-	super helpful: https://www.freecodecamp.org/news/build-your-first-python-package/
-	when uploading a new release on pypi, do this or else you'll run into problems:
-		twine upload dist/projectname-1.0.0.tar.gz
 
 
 
@@ -30,7 +23,9 @@ create a python package:
 
 
 
-
+TestVerification: 
+sms = ghasedakpack.Ghasedak("07cfeac8a34e9763bdb0e6035b8b80efd840ab07c8dad4a25498b944b3522096")
+sms.verification({'receptor': '09120581875','type': '1','template': 'rgh','param1': '1','param2': '2','param3': '3','param5':'5','param6':'6','param7':'7'})
 
 
 

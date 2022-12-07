@@ -1,0 +1,54 @@
+C# setup:
+https://www.youtube.com/watch?v=UrQWii_kfIE
+
+-install these nugets on infrastructure:
+	-StackExchange.Redis
+	-Microsoft.Extensions.Caching.StackExchangeRedis
+-Have this written somewhere and add it to program.cs:
+	public static void AddRedis(this IServiceCollection services, IConfiguration configuration)
+   	{
+   	    var redis = ConnectionMultiplexer.Connect(configuration.GetConnectionString("RedisConnection"));
+   	    services.AddSingleton<IConnectionMultiplexer>(redis);
+   	    services.AddStackExchangeRedisCache(options =>
+   	    {
+   	        options.Configuration = configuration.GetConnectionString("RedisConnection");
+   	        options.InstanceName = "SMSTransmissionsRedis";
+   	    });
+   	    services.AddScoped<IRedisRepository, RedisRepository>();
+   	}
+-Then create a repository along with its interface, like this:
+	public class RedisRepository : IRedisRepository
+    {
+        private IDistributedCache _redisCache;
+
+        public RedisRepository(IDistributedCache redisCache)
+        {
+            _redisCache = redisCache;
+        }
+        public async Task<bool> HasKey(string key)
+        {
+            var content = await _redisCache.GetStringAsync(key);
+            if (String.IsNullOrEmpty(content))
+                return false;
+            return true;
+        }
+        public async Task SetKey(string key, object value, int expirationInMinute = 3)
+        {
+            var content = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(value));
+            var expiration = new DistributedCacheEntryOptions
+            {
+                SlidingExpiration = TimeSpan.FromMinutes(expirationInMinute)
+            };
+            await _redisCache.SetAsync(key, content, expiration);
+        }
+        public async Task<object> GetKey(string key)
+        {
+            var content = await _redisCache.GetStringAsync(key);
+            if (!String.IsNullOrEmpty(content))
+                return JsonConvert.DeserializeObject<object>(content);
+            return null;
+        }
+    }
+
+-Make sure the database isn't ReadOnly!
+-You should be good to go.

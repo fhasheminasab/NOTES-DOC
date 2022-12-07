@@ -1,3 +1,7 @@
 -Open Visual Studio Installer, go to "individual components" and search for "Windowse Communication Foundation" and install it.
 -inside your microservice add a new project and while doing so search for a "WCF Service Library" project
 -you can right click on it and add a "Service Reference"
+-you should give it a link to read from and a name (later you may be able to hit "Properties" on it and get the link)
+-then to use it first right click on the project and add an item, while doing so select "WCF Service"
+-now inside the "Service" and the "IService" classes implement your methods using the WCF service you added:
+	just enter the name of the WCF service you created and hit ".", it'll give you all of its methods

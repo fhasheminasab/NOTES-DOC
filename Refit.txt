@@ -1,0 +1,53 @@
+watch:https://www.youtube.com/watch?v=HH8drNbai8w
+-On the client project install:
+	-Refit
+	-Refit HttpClientFactory
+-On the Server project make sure Cors is added:
+	sevices.AddCors(policy=>
+	{
+		policy.AddPolicy("OpenCorsPolicy", opt=>
+				opt.AllowAnyOrigin()
+				.AllowAnyHeader()
+				.AllowAnyMethod()
+		);
+	});
+-Then use it:
+	app.UseCors("OpenCorsPolicy");
+-in the client, copy paste all the models you'll need, and create an interface to communicate with the server project (create it in a folder named "Data Access" or sth), and give them all a path:
+	public interface IYourInterface
+	{
+		[Get("/WhateverPath")]
+		Task<List<YourModel>> YourEndpointOnTheServer();
+
+		[Get("/WhateverPath/{id}")]
+		Task<YourModel> YourEndpointOnTheServer2(int id);
+
+		[Get("/WhateverPath")]
+		Task YourEndpointOnTheServer3([Body] YourModel input);
+
+		//...
+	}
+-go to its program.cs:
+	builder.Services.AddRefitClient<IYourInterface>().ConfigureHttpClient(c=>
+		{
+			c.BaseAddress = new Uri("https://The uri of you server project");
+			//or get it from appsettings:
+			//c.BaseAddress = new Uri(configuration["urls:YourServerName"]);
+		}
+	);
+-then in the client app, create a .cs file, get "IYourInterface" in the constructor and:
+	public class SmsRequestManagementRefit
+    {
+        private readonly IYourInterface yourInterface;
+
+        public SmsRequestManagementRefit(IYourInterface yourInterface)
+        {
+            this.yourInterface = yourInterface;
+            //if you havent added it:
+            //yourInterface = RestService.For<IYourInterface>("???");
+        }
+        public async Task YourEndpointOnTheServer3OrSomeOtherName()
+        {
+            await yourInterface.YourEndpointOnTheServer3();
+        }
+    }

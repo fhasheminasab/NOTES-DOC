@@ -14,3 +14,26 @@ go to the github repo and click on "Code" and get the HTTPS URL:
 //(replace <remote repository URL> with the URL)
 
 >git push -f origin master
+
+
+
+--------------------------------------------------
+lost unpushed commits:
+-run this to get your commit Ids:
+ $git reflog
+-then push them like this:
+$git push origin 17dda80b:master
+--------------------------------------------------
+lost stash:
+$ git stash list
+$ gitk --all $( git fsck --no-reflog | awk '/dangling commit/ {print $3}' )
+-you can find the stash from ui
+$ git stash apply
+
+
+
+GITFLOW/////////////////////////////////////////////////////
+1-install gitflow extension
+2-Open the "Team Explorer" window and select gitflow
+3-initialize
+4-start

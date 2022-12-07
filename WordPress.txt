@@ -1,0 +1,25 @@
+////////////////////Installation////////////////////
+The Easy Way:
+	- Whatch this: https://git.ir/linkedin-installing-and-running-wordpress-local-by-flywheel/
+	- Download and install "Local" by flywheel.
+The Mannulal Installation:
+	1- Download and install "Xampp".
+	2- Goinside the xampp folder where it's installed (in C by default), inside the "htdocs" and extract all the Wordpress files there
+	3- run "Xampp control panel" and start "Apache" and "MySQL".
+	4- Open a browser and type "localhost/phpmyadmin".
+	5- Click "new", type a name, from the dropdown pick "utf8_unicode_ci" and hit "Create".
+	6- Now, open a browser and type "localhost/wordpress".
+	7- Hit next, Enter DbName, set username to "root", don't touch anything else and hit next.
+	8- To sign in go to "localhost/wordpress/wp-admin".
+	9- To view the published website go to "localhost/wordpress".
+////////////////Source/////////////////
+To edit a plugin, just find its php file and edit it. somewhere like:
+	xampp\htdocs\wordpress\wp-content\plugins\digits
+	OR
+	Local Sites\%THESITE%\app\public\wp-content\plugins
+////////////////Debug//////////////////
+to see whats cuasing an error:
+-open inspect on the website
+-go to the "Console" tab
+-press crl+L (or click "Clear")
+-submit whatever form your testing, and the error will show

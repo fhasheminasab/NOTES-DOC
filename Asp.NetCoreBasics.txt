@@ -217,3 +217,11 @@ Dapper:
 	  	},
 	 -then add the dbContext class. (as explained in the "Create" section)
 	 -then add the service to the services in program.cs (also explained).
+/////////////////////////////Remove Noise in the output:
+builder.Services.TryAddTransient<IValidatorFactory, ServiceProviderValidatorFactory>();
+builder.Services.AddFluentValidationRulesToSwagger();
+/////////////////////////////
+BackGround Worker Service:
+https://youtu.be/sGCk4K0o4jc
+-right click add a new project: worker service
+-

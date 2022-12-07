@@ -1,0 +1,70 @@
+watch: https://www.youtube.com/watch?v=WiQliRkgmXg
+--------------------------------------------------------------------
+-install these packages on the consumer and publisher project:
+	MassTransit
+	MassTransit.AspNetCore
+	MassTransit.RabbitMQ
+-Add somthing like this to the publisher's program.cs:
+	builder.Services.AddMassTransit(config =>
+	{
+
+	    config.AddConsumer<YourRegisteredConsumer>();
+
+	    config.UsingRabbitMq((ctx, cfg) =>
+	    {
+	        cfg.Host(configuration["EventBusSettings:HostAddress"]);
+
+	        cfg.ReceiveEndpoint(EventBusConstants.GhasedakGeneralQueue, c =>
+	        {
+	            c.ConfigureConsumer<YourRegisteredConsumer>(ctx);
+	        });
+	    });
+	});
+
+-Then add somthing like this to the Consumer's program.cs:
+	builder.Services.AddMassTransit(config =>
+	{
+	    config.UsingRabbitMq((ctx, cfg) =>
+	    {
+	        cfg.Host(configuration["EventBusSettings:HostAddress"]);
+	    });
+	});
+-in the appsettings.json of both projects add:
+	"EventBusSettings": {
+    	"HostAddress": "amqp://guest:guest@localhost:5672"
+    },
+
+-Alongside the "Services" folder (the one that contains all the micoservices), create a "BuildingBlocks" folder. 
+-inside it create a class library project with a name like "EventBus.Messages".
+-inside that you'll need to add some folders:
+-TODO................
+-create an event class for what you wanna pass through the bus, (like the "YourRegisteredEvent" that we passed in the program.cs) and let it have the fields your passing, here's an example:
+	public class UserRegisteredEvent : IntegrationBaseEvent
+    {
+        public int UserId { get; set; }
+        public string UserName { get; set; }
+        public string Mobile { get; set; }
+
+    }
+-Then inside the publisher's .Application project, create a "EventBusConsumer" folder and add your consumer classes here. remember to make each one inherit "IConsumer<YourRegisteredEvent>", and implement the "Consume" method for them:
+	public class UserRegisteredConsumer : IConsumer<UserRegisteredEvent>
+    {
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
+        private readonly ILogger<UserRegisteredConsumer> _logger;
+
+        public UserRegisteredConsumer(IMediator mediator, IMapper mapper, ILogger<UserRegisteredConsumer> logger)
+        {
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        public async Task Consume(ConsumeContext<UserRegisteredEvent> context)
+        {
+            var command = new CreateTokenStoreCommand() { TokenType = TokenType.Register, UserName = context.Message.UserName };
+            var result = await _mediator.Send(command);
+            await sendSMS(result, context.Message.Mobile);
+            _logger.LogInformation("UserRegisteredEvent consumed successfully. userName : {userName}", context.Message.UserName);
+        }
+    }
