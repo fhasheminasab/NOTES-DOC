@@ -13,3 +13,5 @@
 !Solution:
 	-Delete extra images from docker
 	-Restart Zookeeper if failed
+
+	when webservice projects send TimeOut error as response: restart zookeeper
