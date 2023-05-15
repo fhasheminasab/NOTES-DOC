@@ -1,0 +1,157 @@
+tutorial:
+https://git.ir/linkedin-learn-apache-kafka-for-beginners/
+
+-clusters contain brokers,
+-topics can be used as different partitions,
+-actual messages in partitions (6 by default) have indexees called offsets,
+-partitions of a certain topic can be replicated through different brokers (so the replica(ISR) will be used in case the leader fails) 
+-the produecr will put messages of certain topics through partitions, and it will load balance messages sending to different partitions if not specified which
+-the producer can be specofoed to make sure the message is received:
+	acks = 0 : producer doesnt wait for an acknowledgment, so data could be lost.
+	acks = 1 : will wait for a leader's ack, so there might be limited data lost.
+	acks = all : the leader and replicas are going to acknowledge receiving the data, so no data will be lost.
+-messages can be sent with a key: if the key is null messages will be sent to different brokers one by one. but if it is specified they will go through the same partition.
+-the consumers will be receiving the messages, and can do so from multiple consumers
+
+
+IMPLEMENT://////////////////////////////////////////////////////////////////
+-install "Confluent.Kafka" package.
+-create a kafka folder and inside create these:
+	-ConsumerSettings
+	-KafkaClientHandle
+	-KafkaProducer
+	-ServiceExtentions
+-here's an example of of what they should look like:
+---------
+	public static class ConsumerSettings
+	{
+	    public static ConsumerConfig GetConsumerConfig(IConfiguration configuration)
+	    {
+	        return new ConsumerConfig()
+	        {
+	            BootstrapServers = configuration["KafkaProducerSettings:BootstrapServers"],
+	            SecurityProtocol = SecurityProtocol.SaslPlaintext,
+	            SaslMechanism = SaslMechanism.Plain,
+	            SaslUsername = configuration["KafkaProducerSettings:SaslUsername"],
+	            SaslPassword = configuration["KafkaProducerSettings:SaslPassword"],
+	            GroupId = "g1",
+	        };
+	    }
+	}
+---------
+	public class KafkaClientHandle : IDisposable
+    {
+        IProducer<Null, string> kafkaProducer;
+        public KafkaClientHandle(IConfiguration configuration)
+        {
+            kafkaProducer = new ProducerBuilder<Null, string>(new ProducerConfig
+            {
+                BootstrapServers = configuration["KafkaProducerSettings:BootstrapServers"],
+                SecurityProtocol = SecurityProtocol.SaslPlaintext,
+                SaslMechanism = SaslMechanism.Plain,
+                SaslUsername = configuration["KafkaProducerSettings:SaslUsername"],
+                SaslPassword = configuration["KafkaProducerSettings:SaslPassword"],
+            }).Build();
+        }
+        public Handle Handle { get => kafkaProducer.Handle; }
+        public void Dispose()
+        {
+            kafkaProducer.Flush();
+            kafkaProducer.Dispose();
+        }
+    }
+---------
+	public class KafkaProducer
+    {
+        IProducer<Null, string> kafkaHandle;
+        public KafkaProducer(KafkaClientHandle handle)
+        {
+            kafkaHandle = new DependentProducerBuilder<Null, string>(handle.Handle).Build();
+        }
+        public async Task ProduceAsync<T>(string topic, T message, CancellationToken cancellationToken = default)
+        {
+            var ev = new Message<Null, string>
+            {
+                Value = JsonConvert.SerializeObject(message)
+            };
+            await kafkaHandle.ProduceAsync(topic, ev, cancellationToken);
+        }
+        public void Produce<T>(string topic, T message, Action<DeliveryReport<Null, string>> deliveryHandler = null)
+        {
+            var ev = new Message<Null, string>
+            {
+                Value = JsonConvert.SerializeObject(message)
+            };
+            kafkaHandle.Produce(topic, ev, deliveryHandler);
+        }
+        public void Flush(TimeSpan timeout) => kafkaHandle.Flush(timeout);
+    }
+---------
+	public static class ServiceExtentions
+    {
+        public static IServiceCollection AddKafka(this IServiceCollection services)
+        {
+            services.AddSingleton(typeof(KafkaProducer));
+            services.AddSingleton<KafkaClientHandle>();
+            return services;
+        }
+    }
+produce://////////////////////////////////////////////////////////////////
+-add the service inside program.cs (better to add them inside an "AddKafka" class):
+	builder.Services.AddSingleton(typeof(KafkaProducer));
+    builder.Services.AddSingleton<KafkaClientHandle>();
+-add some kafka settings inside appsettings:
+	"KafkaProducerSettings": {
+	  "BootstrapServers": "178.216.249.108:9092",
+	  "SecurityProtocol": "SaslPlaintext",
+	  "SaslMechanism": "Plain",
+	  "SaslUsername": "kafka",
+	  "SaslPassword": "X8s2*24cZiAY2342d"
+	},
+-inside your handler inject KafkaProducer
+-and produce it like this:
+	await _kafkaProducer.ProduceAsync<SmsIsSentEvent>(EventBusConstants.SmsIsSentRahyabQueue, eventMessage, cancellationToken);
+consume://////////////////////////////////////////////////////////////////
+-create a worker, and register it like this:
+	services.AddHostedService<MyConsumerWorker>();
+-have these inside it:
+	private bool _consuming = true;
+    private readonly IConsumer<Ignore, string> _kafkaConsumer;
+    private readonly IConfiguration _configuration;
+    private static JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
+    {
+        ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
+    };
+-and these in the constructor:
+    _configuration = configuration;
+    _kafkaConsumer = new ConsumerBuilder<Ignore, string>(ConsumerSettings.GetConsumerConfig(_configuration)).Build();
+-WARNING: do not inject other dependencies in the constructor (scoped or transients interfaces)
+-to inject stuff, inside the "ExecuteAsync", do as below:
+	 _redis = scope.ServiceProvider.GetRequiredService<IRedisRepository>();
+	 _providerGrpcServices = scope.ServiceProvider.GetRequiredService<IProviderGrpcServices>();
+-then have a 
+	_ = Task.Run(async () =>
+    {
+        //inside...
+    });
+-inside it, subscribe to the topic:
+	_kafkaConsumer.Subscribe(EventBusConstants.SmsIsToBeSentRahyabQueue);
+-to consume, use "_kafkaConsumer.Consume(stoppingToken);" but it's in json, so convert it. (wait, an example will be provided.)
+-after receiving it you should .Commit the message.
+ such as below
+	:_ = Task.Run(async () =>
+            {
+                _kafkaConsumer.Subscribe(EventBusConstants.SmsIsToBeSentMagfaQueue);
+
+                while (_consuming && !stoppingToken.IsCancellationRequested)
+                {
+                    try
+                    {
+	    			 	var message = _kafkaConsumer.Consume(stoppingToken);
+	    			 	var eventData = JsonConvert.DeserializeObject<SmsIsToBeSentEvent>(message.Message.Value/*, _serializerSettings*/);
+	    			 	_kafkaConsumer.Commit(message);
+	    			 	//... do your stuff here
+	    			}
+                    catch { }
+                }
+           	});

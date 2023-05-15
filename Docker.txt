@@ -95,9 +95,17 @@ set name mammad
 get name
 
 
-
-
-
--------------------
+--------------------------------------
 AutoCreate docker continer:
 https://wrapt.dev/blog/integration-tests-using-sql-server-db-in-docker
+--------------------------------------
+Push/upload image to dockerhub:
+-go to dockerhub and create a repository.
+-open terminal in the project location:
+	docker login
+	docker images
+-if the image's TAG isn't set ti "latest", create one:
+	docker tag THEFIRSTTHREEDIGITSINIMAGEID USERNAME/YOURREPOSITORYNAME
+-then:
+	docker push USERNAME/YOURREPOSITORYNAME:latest
+--------------------------------------

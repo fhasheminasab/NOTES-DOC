@@ -1,0 +1,104 @@
+INSTALLATION//////////////////////////////////////
+---------------
+Domain:
+-install "MongoDB.Bson"
+-add log Entity class (alongside other entities) and Tag the Id:
+public class UrlForwardLog
+    {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
+        public string Name { get; set; }
+
+        public UrlForwardLog() { }
+        public UrlForwardLog(string name)
+        {
+        	Name = name;
+        }
+    }
+-add repository interface(Domain=>Contracts):
+	public interface IWebServiceLogRepository
+    {
+        Task InsertAsync(WebServiceLog webServiceLog);
+        Task<PagedList<WebServiceLog>> SearchLogsPagingAsync(int page, int pageSize, string name);
+        Task<WebServiceLog> GetLogAsync(string id);
+    }
+---------------
+Infrastructure:
+-install "MongoDB.Driver"
+-add db info to "appsettings.json"=>"ConnectionStrings":
+	"MongoConnectionString": "mongodb://YourServerAddress:27017",
+    "MongoDatabaseName": "YourDatabaseName"
+-add context & interface (your entity = "WebServiceLog"):
+	public interface IMongoContext
+    {
+        IMongoCollection<UrlForwardLog> WebServiceLogs { get; }
+    }
+    public class MongoContext : IMongoContext
+    {
+        public MongoContext(IConfiguration configuration)
+        {
+            var client = new MongoClient(configuration["ConnectionStrings:MongoConnectionString"]);
+            var database = client.GetDatabase(configuration["ConnectionStrings:MongoDatabaseName"]);
+            WebServiceLogs = database.GetCollection<WebServiceLog>("WebServiceLogs");
+        }
+
+        public IMongoCollection<WebServiceLog> WebServiceLogs { get; }
+    }
+-add repository and interface (example):
+	public class WebServiceLogRepository : IWebServiceLogRepository
+    {
+        private readonly IMongoContext _context;
+
+        public WebServiceLogRepository(IMongoContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
+        public async Task<PagedList<WebServiceLog>> SearchLogsPagingAsync(int page, int pageSize, string[] apikey, DateTime? from, DateTime? to, int statusCode)
+        {
+            var filter = apikey == null ? null : Builders<WebServiceLog>.Filter.In(x => x.ApiKey, apikey);
+            var data = apikey == null
+                ? await _context.WebServiceLogs.Find(_ => true)
+                .SortByDescending(x => x.CreatedDate)
+                .Skip((page - 1) * pageSize)
+                .Limit(pageSize)
+                .ToListAsync()
+                : await _context.WebServiceLogs.Find(filter: filter)
+                .SortByDescending(x => x.CreatedDate)
+                .Skip((page - 1) * pageSize)
+                .Limit(pageSize)
+                .ToListAsync();
+
+            var count = apikey == null
+                ? await _context.WebServiceLogs.CountDocumentsAsync(_ => true)
+                : await _context.WebServiceLogs.CountDocumentsAsync(filter);
+            return new PagedList<WebServiceLog>()
+            {
+                IndexFrom = 0,
+                Items = data,
+                PageIndex = page,
+                PageSize = pageSize,
+                TotalCount = (int)count,
+                TotalPages = (int)Math.Ceiling(count / (double)pageSize)
+            };
+        }
+
+        public async Task InsertAsync(WebServiceLog webServiceLog)
+        {
+            await _context.WebServiceLogs.InsertOneAsync(webServiceLog);
+        }
+
+        public async Task<WebServiceLog> GetLogAsync(string id)
+        {
+            return await _context
+                           .WebServiceLogs
+                           .Find(p => p.Id == id)
+                           .FirstOrDefaultAsync();
+        }
+    }
+-in infra's Dependency injection, add this in the "AddDbContext" method (or anywhere in program.cs):
+    services.AddScoped<IMongoContext, MongoContext>();
+-also inject the repository:
+    services.AddScoped<IUrlForwardLogRepository, UrlForwardLogRepository>();
+---------------

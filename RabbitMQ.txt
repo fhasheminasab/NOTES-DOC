@@ -1,53 +1,101 @@
 watch: https://www.youtube.com/watch?v=WiQliRkgmXg
---------------------------------------------------------------------
--install these packages on the consumer and publisher project:
-	MassTransit
+CONCEPT--------------------------------------------------------------------
+there are publishers who publish "Event"s into "Queue"s and consumers who consume them.
+consumers should be registered.
+SETUP--------------------------------------------------------------------
+
+-install these packages on the consumer and publisher project (.Api):
+	MassTransit (=> install this on .Application too)
 	MassTransit.AspNetCore
 	MassTransit.RabbitMQ
--Add somthing like this to the publisher's program.cs:
+-in the appsettings.json of both projects add:
+	"RabbitMq": {
+	  "Url": "rabbitmq://178.216.249.108:5672",
+	  "Port": 5672,
+	  "Username": "",
+	  "Password": ""
+	},
+-Register consumers: add somthing like this to the Consumer's program.cs:
 	builder.Services.AddMassTransit(config =>
 	{
 
 	    config.AddConsumer<YourRegisteredConsumer>();
+	    config.AddConsumer<YourRegisteredSecondConsumer>();
 
 	    config.UsingRabbitMq((ctx, cfg) =>
 	    {
-	        cfg.Host(configuration["EventBusSettings:HostAddress"]);
+	        cfg.Host(configuration["RabbitMq:Url"]);
 
-	        cfg.ReceiveEndpoint(EventBusConstants.GhasedakGeneralQueue, c =>
+	        cfg.ReceiveEndpoint(EventBusConstants.YourQueue, c =>
 	        {
 	            c.ConfigureConsumer<YourRegisteredConsumer>(ctx);
+	        });
+	        cfg.ReceiveEndpoint(EventBusConstants.YourSecondQueue, c =>
+	        {
+	            c.ConfigureConsumer<YourRegisteredSecondConsumer>(ctx);
 	        });
 	    });
 	});
 
--Then add somthing like this to the Consumer's program.cs:
-	builder.Services.AddMassTransit(config =>
-	{
-	    config.UsingRabbitMq((ctx, cfg) =>
-	    {
-	        cfg.Host(configuration["EventBusSettings:HostAddress"]);
-	    });
-	});
--in the appsettings.json of both projects add:
-	"EventBusSettings": {
-    	"HostAddress": "amqp://guest:guest@localhost:5672"
-    },
+-Then add somthing like this to the publisher's program.cs:
+	services.AddMassTransit(config =>
+            {
+                var tt = configuration["RabbitMq:Username"];
+                var vv = configuration["RabbitMq:Password"];
+                services.AddMassTransit(config =>
+                {
+                    config.UsingRabbitMq((ctx, cfg) =>
+                    {
+                        cfg.Host(configuration["RabbitMq:Url"], cf =>
+                        {
+                            cf.Username(tt);
+                            cf.Password(vv);
+                        });
+
+                    });
+                });
+            });
 
 -Alongside the "Services" folder (the one that contains all the micoservices), create a "BuildingBlocks" folder. 
 -inside it create a class library project with a name like "EventBus.Messages".
--inside that you'll need to add some folders:
--TODO................
--create an event class for what you wanna pass through the bus, (like the "YourRegisteredEvent" that we passed in the program.cs) and let it have the fields your passing, here's an example:
-	public class UserRegisteredEvent : IntegrationBaseEvent
+-inside, add these folders:
+	-common: contains the "EventBusConstants" class.
+	-Events: contains event classes (sth like Dtos).
+-the "EventBusConstants" class contains Queues:
+	public static class EventBusConstants
+	{
+	    public const string YourQueue = "your-queue";
+	    public const string YourSecondQueue = "yoursecond-queue";
+	} 
+-create an event class for what you wanna pass through each Queue, or a number of queues, (like the "YourRegisteredEvent" that we passed in the program.cs) and let it have the fields your passing, here's an example:
+	public class YourEvent : IntegrationBaseEvent
     {
         public int UserId { get; set; }
         public string UserName { get; set; }
         public string Mobile { get; set; }
 
     }
--Then inside the publisher's .Application project, create a "EventBusConsumer" folder and add your consumer classes here. remember to make each one inherit "IConsumer<YourRegisteredEvent>", and implement the "Consume" method for them:
-	public class UserRegisteredConsumer : IConsumer<UserRegisteredEvent>
+-here's what "IntegrationBaseEvent" can look like:
+	public class IntegrationBaseEvent
+    {
+        public IntegrationBaseEvent()
+        {
+            Id = Guid.NewGuid();
+            CreationDate = DateTime.UtcNow;
+        }
+
+        public IntegrationBaseEvent(Guid id, DateTime createDate)
+        {
+            Id = id;
+            CreationDate = createDate;
+        }
+
+        public Guid Id { get; private set; }
+
+        public DateTime CreationDate { get; private set; }
+    } 
+-Then inside the consumer's ".Application" project, create a "EventBusConsumer" folder and add your consumer classes here. remember to make each one inherit "IConsumer<YourEvent>", and implement the "Consume" method for them (the received event is "context.Message"):
+	public class UserRegisteredConsumer : IConsumer<YourEvent>
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
@@ -60,11 +108,15 @@ watch: https://www.youtube.com/watch?v=WiQliRkgmXg
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task Consume(ConsumeContext<UserRegisteredEvent> context)
+        public async Task Consume(ConsumeContext<YourEvent> context)
         {
             var command = new CreateTokenStoreCommand() { TokenType = TokenType.Register, UserName = context.Message.UserName };
             var result = await _mediator.Send(command);
             await sendSMS(result, context.Message.Mobile);
-            _logger.LogInformation("UserRegisteredEvent consumed successfully. userName : {userName}", context.Message.UserName);
+            _logger.LogInformation("YourEvent consumed successfully. userName : {userName}", context.Message.UserName);
         }
     }
+-to publish an event, (so it will be consumed by a consumer) inject "IPublishEndpoint" inside your handler:
+	private readonly IPublishEndpoint _publishEndpoint;
+-then use it:
+	await _publishEndpoint.Publish(eventMessage, CancellationToken);

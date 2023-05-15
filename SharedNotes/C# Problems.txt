@@ -1,0 +1,15 @@
+!Error:
+	Building filebeat
+	unable to prepare context: unable to evaluate symlinks in Dockerfile path: lstat /home/ghasedaksms/src/Dockerfile: no such file or 	directory
+	ERROR: Service 'filebeat' failed to build : Build failed
+!Solution:
+	-in the src:
+		sudo nano docker-compose.override.yml
+	-then in the filebeat section correct the path to:
+		context: ./filebeat
+----------------------------------------------------------------------------------
+!Error:
+	Doesn't log in=>probably out of disk space
+!Solution:
+	-Delete extra images from docker
+	-Restart Zookeeper if failed

@@ -2,17 +2,7 @@ watch:https://www.youtube.com/watch?v=HH8drNbai8w
 -On the client project install:
 	-Refit
 	-Refit HttpClientFactory
--On the Server project make sure Cors is added:
-	sevices.AddCors(policy=>
-	{
-		policy.AddPolicy("OpenCorsPolicy", opt=>
-				opt.AllowAnyOrigin()
-				.AllowAnyHeader()
-				.AllowAnyMethod()
-		);
-	});
--Then use it:
-	app.UseCors("OpenCorsPolicy");
+-On the Server project make sure Cors is added and used.
 -in the client, copy paste all the models you'll need, and create an interface to communicate with the server project (create it in a folder named "Data Access" or sth), and give them all a path:
 	public interface IYourInterface
 	{

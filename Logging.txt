@@ -1,0 +1,99 @@
+We mostly do it with MongoDb.
+---------------
+To Log requests, they should be recorded in a middleware,
+-injected in program.cs:
+	app.UseMiddleware<HttpLoggingMiddleware>();
+-and this is the class:
+	public class HttpLoggingMiddleware
+    {
+        private readonly IMediator _mediator;
+        private readonly RequestDelegate _next;
+
+        public HttpLoggingMiddleware(RequestDelegate next, IServiceProvider serviceProvider)
+        {
+            _next = next;
+            _mediator = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IMediator>();
+        }
+
+        public async Task Invoke(HttpContext context)
+        {
+            //Copy  pointer to the original response body stream
+            var originalBodyStream = context.Response.Body;
+
+            //Get incoming request
+            var request = GetRequestAsText(context.Request);
+
+
+            //Create a new memory stream and use it for the temp reponse body
+            await using var responseBody = new MemoryStream();
+            context.Response.Body = responseBody;
+
+            //Continue down the Middleware pipeline
+            await _next(context);
+
+            //Format the response from the server
+            var response = await GetResponseAsTextAsync(context.Response);
+            //Log it
+            await _mediator.Send(new CreateWebServiceLogCommand()
+            {
+                ApiKey = request.Item1,
+                Request = request.Item2,
+                Response = response,
+                Ip = (context.Request.HttpContext.Connection.RemoteIpAddress ?? IPAddress.None).ToString(),
+                Method = context.Request.Method,
+                StatusCode = context.Response.StatusCode,
+                Url = UriHelper.GetDisplayUrl(context.Request).ToLower()
+            }
+            );
+
+            //Copy the contents of the new memory stream, which contains the response to the original stream, which is then returned to the client.
+            await responseBody.CopyToAsync(originalBodyStream);
+        }
+
+
+        private Tuple<string, string> GetRequestAsText(HttpRequest request)
+        {
+            Dictionary<string, string> dicparams = new();
+            // from query string
+            var url = UriHelper.GetDisplayUrl(request).ToLower();
+            try
+            {
+                string[] querystrtings = url.Split("?", StringSplitOptions.RemoveEmptyEntries);
+                if (querystrtings != null && querystrtings.Length > 1)
+                {
+                    querystrtings = querystrtings[1].Split("&", StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var item2 in querystrtings)
+                    {
+                        var queryParameters = item2.Split("=", StringSplitOptions.RemoveEmptyEntries);
+                        dicparams.Add(queryParameters[0], HttpUtility.UrlDecode(queryParameters[1]));
+                    }
+
+                }
+            }
+            catch { }
+
+            try
+            {
+                //from body
+                if (request.Form != null)
+                {
+                    foreach (var item in request.Form)
+                    {
+                        dicparams.Add(item.Key.ToLower(), HttpUtility.UrlDecode(item.Value));
+                    }
+                }
+            }
+            catch { }
+            return Tuple.Create(request.Headers.Where(x => x.Key.ToLower() == "apikey").FirstOrDefault().Value.ToString(), JsonConvert.SerializeObject(dicparams));
+        }
+
+        private async Task<string> GetResponseAsTextAsync(HttpResponse response)
+        {
+            response.Body.Seek(0, SeekOrigin.Begin);
+            //Create stream reader to write entire stream
+            var text = await new StreamReader(response.Body).ReadToEndAsync();
+            response.Body.Seek(0, SeekOrigin.Begin);
+
+            return text;
+        }
+    }

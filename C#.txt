@@ -1,0 +1,4 @@
+-Return Tuple in Repository:
+	 public async Task<List<(ProviderName, string)>> GetAllDescriptions(ProviderName name, CancellationToken cancellationToken = default) =>
+           (await _context.Providers.Select(x => new { x.Code, x.Description }).ToListAsync(cancellationToken: cancellationToken))
+            .Select(x => (x.Code, x.Description)).ToList();
