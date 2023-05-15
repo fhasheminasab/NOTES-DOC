@@ -9,9 +9,13 @@
 		context: ./filebeat
 ----------------------------------------------------------------------------------
 !Error:
-	Doesn't log in=>probably out of disk space
+	Doesn't log in
 !Solution:
 	-Delete extra images from docker
+	-problem with zookeeper
+!Error:
+	zookeeper
+!Solution:
 	-Restart Zookeeper if failed
 	-if non of that worked delete zookeeper+kafka data in the root directory:
 		rm /root/zookeeper/* -r
