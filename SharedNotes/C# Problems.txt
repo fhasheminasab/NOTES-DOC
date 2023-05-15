@@ -13,3 +13,6 @@
 !Solution:
 	-Delete extra images from docker
 	-Restart Zookeeper if failed
+	-if non of that worked delete zookeeper+kafka data in the root directory:
+		rm /root/zookeeper/* -r
+		rm /root/kafka/* -r
