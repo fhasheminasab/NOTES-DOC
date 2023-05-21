@@ -14,4 +14,8 @@
 	-Delete extra images from docker
 	-Restart Zookeeper if failed
 
-	when webservice projects send TimeOut error as response: restart zookeeper
+when webservice projects send TimeOut error as response: restart zookeeper
+
+On namespace fake Errors: Unload and reload the target project. if it didn't work try to open all files from the target project. (target project is the one project that almost all errors comes from it)
+
+On "MetaData ... .dll file not found" Unload and Reload project. if it not worked find the .dll file from other collaboraters system. if it didn't work, remove project and remake it
