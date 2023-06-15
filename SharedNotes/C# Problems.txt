@@ -13,6 +13,7 @@
 !Solution:
 	-Delete extra images from docker
 	-problem with zookeeper
+----------------------------------------------------------------------------------
 !Error:
 	zookeeper
 !Solution:
@@ -20,3 +21,22 @@
 	-if non of that worked delete zookeeper+kafka data in the root directory:
 		rm /root/zookeeper/* -r
 		rm /root/kafka/* -r
+----------------------------------------------------------------------------------
+!Error:
+	"RouteValues" isn't recognised
+!Solution:
+	-Add this line to the *.Infrastructure.csproj,  in the second set of ItemGroups:
+	<FrameworkReference Include="Microsoft.AspNetCore.App" />
+
+!Error:
+	Nor sure if grpc is up
+ASolution:
+	lookup "GrpcCurl" in the grpc file, or if you've installed it, try:
+	grpcurl -plaintext localhost:GRPCPORT YOURPROJECTNAMEProtoService/YOURMETHODNAME
+----------------------------------------------------------------------------------
+!Error:
+	GateWay/Ocelot problems
+!Solution:
+	-It's always THE KEY!!: the "Key" value from the top curlies should be the same as the "SwaggerKey" values from the below curlies.
+----------------------------------------------------------------------------------
+	
