@@ -44,14 +44,11 @@ ASolution:
 !Solution:
 	-Unload and reload the target project.
 	-Open all files from the target project.(the one project that almost all errors comes from it)
-----------------------------------------------------------------------------------!Error:
+----------------------------------------------------------------------------------
+!Error:
 	"MetaData ... .dll file not found"
 !Solution:
 	-Unload and Reload project.
 	-Find the .dll file from other collaboraters system and place it where it tells you to.
 	-Rebuild.
-----------------------------------------------------------------------------------!Error:
-	GateWay/Ocelot problems
-!Solution:
-	-It's always THE KEY!!: the "Key" value from the top curlies should be the same as the "SwaggerKey" values from the below curlies.
 ----------------------------------------------------------------------------------
