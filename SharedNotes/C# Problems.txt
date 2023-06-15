@@ -9,7 +9,7 @@
 		context: ./filebeat
 ----------------------------------------------------------------------------------
 !Error:
-	Doesn't log in
+	Doesn't log in/Webservices return TimeOut
 !Solution:
 	-Delete extra images from docker
 	-problem with zookeeper
@@ -27,7 +27,7 @@
 !Solution:
 	-Add this line to the *.Infrastructure.csproj,  in the second set of ItemGroups:
 	<FrameworkReference Include="Microsoft.AspNetCore.App" />
-
+----------------------------------------------------------------------------------
 !Error:
 	Nor sure if grpc is up
 ASolution:
@@ -39,4 +39,19 @@ ASolution:
 !Solution:
 	-It's always THE KEY!!: the "Key" value from the top curlies should be the same as the "SwaggerKey" values from the below curlies.
 ----------------------------------------------------------------------------------
-	
+!Error:
+	Visual Studio Fake Errors
+!Solution:
+	-Unload and reload the target project.
+	-Open all files from the target project.(the one project that almost all errors comes from it)
+----------------------------------------------------------------------------------!Error:
+	"MetaData ... .dll file not found"
+!Solution:
+	-Unload and Reload project.
+	-Find the .dll file from other collaboraters system and place it where it tells you to.
+	-Rebuild.
+----------------------------------------------------------------------------------!Error:
+	GateWay/Ocelot problems
+!Solution:
+	-It's always THE KEY!!: the "Key" value from the top curlies should be the same as the "SwaggerKey" values from the below curlies.
+----------------------------------------------------------------------------------
