@@ -1,2 +1,4 @@
-install old software that doesn't work on the newest windows:
+-install old software that doesn't work on the newest Windows:
 	https://answers.microsoft.com/en-us/windows/forum/all/how-to-install-devices-software-from-older-windows/c19bee9c-431f-46e2-85f1-6ab90304d278?auth=1
+-disable web search in Windwos search bar:
+	https://www.isumsoft.com/windows-10/turn-off-or-disable-web-results-in-search.html#:~:text=1)%20Click%20in%20the%20%22Search,results%20can%20be%20turned%20off.
