@@ -1,0 +1,3 @@
+value objects have two important 
+1) it shoul not have any identity 
+2) it should be immunable (it means it could not be accessible by any other class rather than its owner)
