@@ -1,3 +1,6 @@
-value objects have two important 
+value objects have two important characteristics
 1) it shoul not have any identity 
 2) it should be immunable (it means it could not be accessible by any other class rather than its owner)
+ 
+value objects dependent on their implementtion, can be map in variety of ways in database
+
