@@ -1,94 +1,280 @@
 whenever you wanna make internal connections between two microservices, use Grpc, it's faster than redis.
 /////////////////Setup:
-Setting up the server project (providing):
--go to the project folder and right click to create a new project alongside the other ones, (like the way you insert tests), and then in the search bar (while you're creating it), type Grps. and create a new Grpc project.
--then go to its .csproj file and insert whatever package reference you've already added to the .csproj file (of the .Api project probably) of the server microservice.
--then in the package manager console (opened in the Grpc project) type something like:
-	Update-Package -ProjectName Users.Grpc
--then reference your .Api project.
--inside the "Protos" folder right click to add an item and create a .proto file (delete the sample one)
--right click on the .proto file and hit properties; then change "Build Action" to "Protobuf compiler" and change "gRPC Stub Classes" to "Server Only"
--inside the .proto file you need to write your contracts; the stuff you wanna pass. Here's an example:
-	service UsersProtoService{
-		rpc GetUser (GetUserRequest) returns (UserModel);
-		rpc CreateUser (CreateUserRequest) returns (UserModel);
-		rpc UpdateUser (UpdateUserRequest) returns (UserModel);
-		rpc DeleteUser (DeleteUserRequest) returns (UserModel);
-	}
 
-	message GetUserRequest{
-		string Id = 1;
-	}
-	message UserModel{
-		int32 id=1;
-		string Username = 2;
-		string Password=3;
-		string FirstName=4;
-		string LastName=5;
-	}
--then inside the "Services file" and create a .cs file to do the work you defined in the .proto file. (first delete the sample one).
--inside this file, you need to inherit the base from the proto file, like this: "UserService : UsersProtoService.UsersProtoServiceBase".
--then you need to override the functions you defined in the .proto. to do so, you can type override and the press ctrl+space. Then recieve required stuff like the repository and mapper in it's consatructor. Here's an example of how it's done:
-	public class UserService : UsersProtoService.UsersProtoServiceBase
-    {
-        private readonly IUserRepository _repository;
-        private readonly IMapper _mapper;
-
-        public UserService(IUserRepository repository, IMapper mapper)
-        {
-            _repository = repository;
-            _mapper = mapper;
+Server---:
+    -install packages:
+        Grpc.AspNetCore
+        Grpc.Core.Api
+        Grpc.Tools
+    -in the .Api project create a "Proto" folder, inside it Add a .proto file, an example:
+        syntax = "proto3";
+        option csharp_namespace = "Authentication.Api.Protos";
+        package AuthenticationGrpcApi;
+        
+        service AuthenticationProtoService{
+            rpc GetAuthStatus (IntValue) returns (IntValue);
         }
-        public override async Task<UserModel> GetUser(GetUserRequest request, ServerCallContext context)
+        
+        message IntValue{
+            int32 id=1;
+        }
+    -Right Click on the proto file, hit "Properties" and make sure "gRPC Stub CLasses" is set to "Server only" and "Build Action" to "Protobuf compiler".
+    -in the .Api project create a "Grpc" folder, inside it Add a "YourStuffGrpcServer" file, an example:
+        namespace BaseInfo.Api.Grpc
         {
-            var user = await _repository.GetByIdAsync(request.Id);
-            if (user == null)
+            public class OperatorsGrpcServer : OperatorProtoService.OperatorProtoServiceBase
             {
-                throw new AppException("کابر پیدا نشد");
+                private readonly IOperatorRepository _operatorRepository;
+                public OperatorsGrpcServer(IOperatorRepository operatorRepository)
+                {
+                    _operatorRepository = operatorRepository;
+                }
+                public override async Task<OperatorList> GetAllOperators(FunctionWithoutParams request, ServerCallContext context)
+                {
+                    return new OperatorList()
+                    {
+                        OperatorInfo = { (await _operatorRepository.GetAllAsync())
+                        ?.Select(op => new OperatorInfo
+                            {
+                                Id = op.Id,
+                                OperatorCode = (int)op.Code,
+                                PreNumber = op.PreNumber ?? string.Empty
+                            }).ToList()
+                        }
+                    };
+                }
             }
-            var userModel = _mapper.Map<UserModel>(user);
-            return userModel;
         }
-    }
--you'll probably need to install automapper for this, so don't forget to add mapping profiles for these, like this:
-	public class MappingProfile : Profile
-    {
-        public MappingProfile()
+    -then inside the "Services file" and create a .cs file to do the work you defined in the .proto file. (first delete the sample one).
+    -inside this file, you need to inherit the base from the proto file, like this: "UserService : UsersProtoService.UsersProtoServiceBase".
+    -then you need to override the functions you defined in the .proto. to do so, you can type override and the press ctrl+space. Then recieve required stuff like the repository and mapper in it's consatructor. Here's an example of how it's done:
+	   public class UserService : UsersProtoService.UsersProtoServiceBase
         {
-            CreateMap<User, UserModel>().ReverseMap();
-            //...moremappings here
+                private readonly IUserRepository _repository;
+                private readonly IMapper _mapper;
+    
+                public UserService(IUserRepository repository, IMapper mapper)
+                {
+                    _repository = repository;
+                    _mapper = mapper;
+                }
+                public override async Task<UserModel> GetUser(GetUserRequest request, ServerCallContext context)
+                {
+                    var user = await _repository.GetByIdAsync(request.Id);
+                    if (user == null)
+                    {
+                        throw new AppException("کابر پیدا نشد");
+                    }
+                    var userModel = _mapper.Map<UserModel>(user);
+                    return userModel;
+                }
         }
-    }
--then add the automapper service in "Program.cs", or whatever dependecy injection file you've added there.
--then inside the Program.cs file, make sure to add the service, as follows:
-	app.MapGrpcService<UserService>();
-	//Delete the sample one
--remember to rebuild the grpc project everytime you make a change.
-Setting up the client project (consuming):
--right click on the client project (.Api) hit "And", "Connected Services".
--in the "Service references" section, hit "Add", and select "grpc", then hit "Next".
--now choose "File" and enter the path of your proto file, and select the type of class as "Client". some changes will be made and you can now see that there's a "Protos" folder.
--Create a "GrpcServices" in the project and create a .cs file corresponding to the one in the grpc project, then implement the receiving end of the methods. here's an example:
-	public class UserGrpcService
-    {
-        private readonly UserProtoService.UserProtoServiceClient _userProtoServiceClient;
 
-        public UserGrpcService(UserProtoService.UserProtoServiceClient userProtoServiceClient)
+    -In the .Api project in the "Configuration" folder, Create a "AddGrpcService.cs" file, inside which add the grpc as server. Something like:
+        public static class AddGrpcService
         {
-            _userProtoServiceClient = userProtoServiceClient;
+            public static void AddGrpcAsServer(this IWebHostBuilder webHost, IConfiguration configuration)
+            {
+                webHost.ConfigureKestrel((services, options) =>
+                {
+                    var (httpPort, grpcPort) = GetDefinedPorts();
+                    options.Listen(IPAddress.Any, httpPort, listenOptions =>
+                    {
+                        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+                    });
+                    options.Listen(IPAddress.Any, grpcPort, listenOptions =>
+                    {
+                        listenOptions.Protocols = HttpProtocols.Http2;
+                    });
+                });
+                (int httpPort, int grpcPort) GetDefinedPorts()
+                {
+                    Uri uriHttp = new(configuration["urls:Users"]);
+                    Uri urigrpc = new(configuration["urls:GrpcUser"]);
+                    return (uriHttp.Port, urigrpc.Port);
+                }
+            }
+            public static void UseGrpcAsServer(this IEndpointRouteBuilder app)
+            {
+                app.MapGrpcService<UserGrpcServer>().RequireAuthorization(RoleTypeConstants.Internal);
+            }
         }
-        public async Task<UserModel> GetUser(int id)
+    -make sure to add this project name to the "UrlsConfig"
+    -then add them in program.cs:
+        builder.Services.AddGrpc();
+        builder.WebHost.AddGrpcAsServer(configuration);
+        app.UseGrpcAsServer();
+    -remember to rebuild the grpc project everytime you make a change.
+    -to make it secure create an Id4 client for it, in my case I only added a "secret" in "Users.Application">"Base">"Clients". 
+Client---:
+    -install packages:
+        Grpc.Net.ClientFactory
+        Grpc.Tools
+    -right click on the client project (.Api) hit "And", "Connected Services".
+    -in the "Service references" section, hit "Add", and select "grpc", then hit "Next".
+    -now choose "File" and enter the path of your proto file, and select the type of class as "Client". some changes will be made and you can now see that there's a "Protos" folder.
+    -Create a "GrpcServices" in the project and create a .cs file corresponding to the one in the grpc project, then implement the receiving end of the methods. here's an example:
+	   public static class AddGrpcService
         {
-            var userRequest = new GetUserRequest { Id = id };
-            return await _userProtoServiceClient.GetUserAsync(userRequest);
+            public static void AddGrpcAsClient(this IServiceCollection services)
+            {
+                services.AddSingleton<AuthInterceptor>();
+                services.AddGrpcClient<PersistentSettingsProtoService.PersistentSettingsProtoServiceClient>((services, options) =>
+                {
+                    var userApi = services.GetRequiredService<IOptions<UrlsConfig>>().Value;
+                    options.Address = new Uri(userApi.GrpcBaseInfo);
+                }).AddInterceptor<AuthInterceptor>();
+        
+                services.AddGrpcClient<NotificationProtoService.NotificationProtoServiceClient>((services, options) =>
+                {
+                    var userApi = services.GetRequiredService<IOptions<UrlsConfig>>().Value;
+                    options.Address = new Uri(userApi.GrpcNotification);
+                }).AddInterceptor<AuthInterceptor>();
+        
+                services.AddScoped<PersistentSettingsGrpcServices>();
+                services.AddScoped<NotificationGrpcServices>();
+            }
         }
-    }
-
--go to the controller or wherever you wanna consume it, declare an instance and make its constructor receive it:
-	private readonly UserGrpcService _userGrpcService;
--then use it like:
-	var userId = await _userGrpcService.GetUser(id);
--make sure to add grpc client dependency to the client projects
+    -add a "GrpcServices" folder, inside which add a service file and its interface, inside wich you will use the functions you defined in the proto:
+         public interface IUserGrpcServices
+         {
+             Task<List<int>> GetSubUsers(int parentId);
+             Task<string> GetAllowedWords(int userId);
+         }
+         public class UserGrpcServices : IUserGrpcServices
+        {
+            private readonly UserProtoService.UserProtoServiceClient _userProtoServcies;
+        
+            public UserGrpcServices(UserProtoService.UserProtoServiceClient userProtoServcies)
+            {
+                _userProtoServcies = userProtoServcies;
+            }
+        
+            public async Task<List<int>> GetSubUsers(int parentId)
+            {
+                var request = new Int32Value() { Value = parentId };
+                var result = await _userProtoServcies.GetSubUsersAsync(request);
+                return result.Values.Select(x => x.Value).ToList();
+            }
+            public async Task<string> GetAllowedWords(int userId)
+            {
+                var request = new Int32Value() { Value = userId };
+                return (await _userProtoServcies.GetAllowedWordsAsync(request)).Value;
+            }
+        } 
+    -make sure to add their dependency:
+        services.AddScoped<IUserGrpcServices, UserGrpcServices>();
+    -add a service file in the .
+    -inject it: go to the controller or wherever you wanna consume it, declare an instance and make its constructor receive it:
+    	private readonly UserGrpcService _userGrpcService;
+    -then use it like:
+    	var userId = await _userGrpcService.GetUser(id);
+    -make sure to add grpc client dependency to the client projects.
+    -add relavant url for the grpc in the appsettings files.(all of them just to be safe)
+    -make sure you've added urlconfig to program.cs:
+        ConfigurationManager configuration = builder.Configuration;
+        builder.Services.Configure<UrlsConfig>(configuration.GetSection("urls"));
+    -to make it secure make sure an interceptor is added as a singleton in the "AddGrpcService" file where you add grpc as a client:
+        services.AddSingleton<AuthInterceptor>();
+    -add the interceptor file in the .Api project in the "Configuration" folder (you have used it). Here's an example (just an example, should't have to be like this):
+        public class AuthInterceptor : Interceptor
+        {
+            private readonly HttpClient _httpClient;
+            private readonly IConfiguration _configuration;
+            private readonly IServiceProvider services;
+            private readonly IWebHostEnvironment environment;
+    
+            public AuthInterceptor(
+                HttpClient httpClient,
+                IConfiguration configuration,
+                IServiceProvider services,
+                IWebHostEnvironment environment)
+            {
+                _httpClient = httpClient;
+                _configuration = configuration;
+                this.services = services;
+                this.environment = environment;
+            }
+    
+            public override AsyncUnaryCall<TResponse> AsyncUnaryCall<TRequest, TResponse>(
+                TRequest request,
+                ClientInterceptorContext<TRequest, TResponse> context,
+                AsyncUnaryCallContinuation<TRequest, TResponse> continuation)
+            {
+                try
+                {
+                    string token;
+                    using (var scope = services.CreateScope())
+                    {
+                        var _redisRepository = scope.ServiceProvider.GetRequiredService<IRedisRepository>();
+                        var _mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+    
+                        token = RedisHelper.GetInternalToken(_mediator, _redisRepository, _httpClient, _configuration, environment).GetAwaiter().GetResult();
+                    }
+                    var headers = new Metadata();
+                    headers.Add("Authorization", $"Bearer {token}");
+    
+                    var ctx = context.Options.Headers is null
+                        ? new ClientInterceptorContext<TRequest, TResponse>(
+                            method: context.Method,
+                            host: context.Host,
+                            options: context.Options.WithHeaders(headers))
+                        : context;
+                    var call = continuation(request, ctx);
+    
+                    return new AsyncUnaryCall<TResponse>(
+                        HandleResponse(call.ResponseAsync),
+                        call.ResponseHeadersAsync,
+                        call.GetStatus,
+                        call.GetTrailers,
+                        call.Dispose);
+                }
+                catch
+                {
+                    return null;
+                }
+    
+            }
+            private async Task<TResponse> HandleResponse<TResponse>(Task<TResponse> inner)
+            {
+                try
+                {
+                    return await inner;
+                }
+                catch (Exception ex)
+                {
+                    InterceptorExceptionStatusObject status = InterceptorExceptionStatusObject.Parse(ex.Message);
+                    if (status.StatusCode == "Unauthenticated")
+                    {
+                        //{ "Status(StatusCode=\"Unauthenticated\", Detail=\"Bad gRPC response. HTTP status code: 401\")"}
+                        using (var scope = services.CreateScope())
+                        {
+                            var _redisRepository = scope.ServiceProvider.GetRequiredService<IRedisRepository>();
+                            var _mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                            await RedisHelper.RemoveInternalToken(_mediator, _redisRepository, _httpClient, _configuration, environment);
+                        }
+                    }
+                    if (status.StatusCode == "PermissionDenied")
+                    {
+                        Console.WriteLine("GRPC INTERCEPTOR: PermissionDenied");
+                        using (var scope = services.CreateScope())
+                        {
+                            var _mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+                            var _redisRepository = scope.ServiceProvider.GetRequiredService<IRedisRepository>();
+                            await RedisHelper.RemoveInternalToken(_mediator, _redisRepository, _httpClient, _configuration, environment);
+                        }
+                    }
+                    return default;
+                    throw new InvalidOperationException("Custom error", ex);
+                }
+            }
+        }    
+    -add relavant info to the interceptor such as the secret, to appsettings:
+        "Authentication": {
+        "UserName": "InternalUser",
+        "Password": "12345678Aa",
+        "Secret": "uj95ebj6d1b6580c319f04tr18c70d1cfd1b5460c777"
+        }
 //////////////////////////////////////Troubleshoot:
 if you're not sure whether or not the connection is up try using GrpcCurl. 
 download it from github, extract where you want it installed, then copy the path and add it to EnvironmentVariables>path
