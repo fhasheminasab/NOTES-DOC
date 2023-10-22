@@ -1,0 +1,4 @@
+access it without allowance:
+	set a password
+make it start after restart:
+	https://www.wintips.org/how-to-run-an-application-as-service/
