@@ -1,0 +1,128 @@
+value objects have two important characteristics
+1) it should not have any identity. (but it should have relation with its owner)
+2) it should be immunable (it means it could not be accessible by any other class rather than its owner)
+
+owner is the entity, which implements the value object.
+value objects base on their implementation, can be map on database in variety of ways.
+if the VO is implemented as a list on the entity, it will be mapped as a table on database. 
+but if it implement as a one-one relation to its owner(entity), it's properties will be mapped as columns, in it's owner's table. 
+also value objects wont have any configuration class for their own, to implementing on database.
+they also can have relation(s) with other entites or other value objects.
+
+example 1: 
+public class Plan
+{
+    public int Id { get; private set; }
+    public string Name { get; private set; }
+    public List<GiftLine> GiftLines { get; private set; }
+
+    public void AddGiftLines(GiftLine giftLines) => GiftLines.Add(giftLines);
+}
+
+public class GiftLine
+{
+     public int LineLength { get; private set; }
+     public int ProviderId { get; private set; }
+     public Provider Provider { get; private set; }
+
+     //foreign key for owner
+     public int PlanId { get; set; }
+     Public Plan Plan { get; set; }
+
+     public GiftLine(int lineLength, int providerId)
+     {
+          LineLength = lineLength;
+          ProviderId = providerId;
+     }
+}
+
+int his example we have giftLines as a VO which is implemented in Plan as a list.  
+the mapping configuration for them is like below:
+
+public class PlanConfiguration : IEntityTypeConfiguration<Plan>
+{
+    public void Configure(EntityTypeBuilder<Plan> builder)
+    {
+        builder.ToTable("Plans");
+
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.Name).IsRequired().HasMaxLength(100);
+
+        // Define a navigation property for GiftLines
+        builder.OwnsMany(x => x.GiftLines, giftLine =>
+        {
+            giftLine.WithOwner(gl => gl.Plan).HasForeignKey(gl => gl.PlanId);
+            giftLine.Property(x => x.LineLength).IsRequired();
+            giftLine.HasOne(x => x.Provider).WithMany().HasForeignKey(x => x.ProviderId);
+        });
+    }
+}
+
+in above example the VO will be another table with an identity. this identity is combined of these two properties:
+first: an Id (which EFCore implements itself for some reason 🤔)
+second: the foregin key for its owner (which in this case would be PlanId)
+
+
+example 2:
+
+public class Plan
+{
+    public int Id { get; private set; }
+    public string Name { get; private set; }
+    public GiftLine GiftLine { get; private set; }
+
+    public void AddGiftLines(GiftLine giftLines) => GiftLine = giftLines;
+}
+
+public class GiftLine
+{
+     public int LineLength { get; private set; }
+     public string Line { get; set; }
+
+     public GiftLine(int lineLength, string line)
+     {
+          LineLength = lineLength;
+          Line = line;
+     }
+}
+
+int his example we have giftLine as a VO which is implemented in Plan as a property.
+it could have no relation with its owner.
+the mapping configuration for them is like below:
+
+public class PlanConfiguration : IEntityTypeConfiguration<Plan>
+{
+    public void Configure(EntityTypeBuilder<Plan> builder)
+    {
+        builder.ToTable("Plans");
+
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.Name).IsRequired().HasMaxLength(100);
+
+        // Define a navigation property for GiftLines
+        builder.OwnsOne(x => x.GiftLine, giftLine =>
+        {
+            giftLine.WithOwner();
+            giftLine.Property(x => x.LineLength).IsRequired();
+            giftLine.Property(x => x.Line);
+        });
+    }
+}
+
+in above example, VO will not be another table. but it's properties will be added as its owner's property.
+the table for Plan after migration, will be like below:
+
++---------------------------+
+|      Plan (Table)        |
++---------------------------+
+| Id (PK)                  |
+| Name                     |
+| GiftLine_LineLength      |
+| GiftLine_Line            |
++---------------------------+
+
+
+
+
+
+
