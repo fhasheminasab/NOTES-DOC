@@ -1,0 +1,95 @@
+
+installation:
+
+-install these packages in the .Application project:
+	-Hangfire.SqlServer
+	-Hangfire.Core
+	-Hangfire.AspNetCore
+-in the appsettings file, in the "ConnectionStrings" section, add:
+	"HangfireConnection": "Server=YourAddress;Database=YourDBName;User Id=YourUserName;Password=YourPass;pooling=false;TrustServerCertificate=True;Min Pool Size=50; Max Pool Size=100;Connect Timeout=300;"
+-add these in the program.cs:
+	-builder.Services.AddHangfire(configuration);
+	-app.InitializeHangfire();
+-add/implement the hangfire config file in the .Api project:
+	public static class HangfireService
+	{
+	    public static IServiceCollection AddHangfire(this IServiceCollection services, IConfiguration configuration)
+	    {
+	        // Add Hangfire services.
+	        var ConnectionString = configuration.GetConnectionString("HangfireConnection");
+	        services.AddHangfire(configuration => configuration
+	           .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+	           .UseSimpleAssemblyNameTypeSerializer()
+	           .UseRecommendedSerializerSettings()
+	           .UseSqlServerStorage(ConnectionString, new SqlServerStorageOptions
+	           {
+	               CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+	               SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+	               QueuePollInterval = TimeSpan.Zero,
+	               UseRecommendedIsolationLevel = true,
+	               DisableGlobalLocks = true,
+	               SchemaName = "Contact"
+	           }));
+	
+	        // Add the processing server as IHostedService
+	        services.AddHangfireServer(option =>
+	        {
+	            option.SchedulePollingInterval = TimeSpan.FromSeconds(4);
+	            option.TimeZoneResolver = new TimeZoneResolver(); // Use the customize TimeZoneInfo
+	        });
+	
+	        return services;
+	    }
+	
+	    public static IApplicationBuilder InitializeHangfire(this IApplicationBuilder app)
+	    {
+	        using (var scope = app.ApplicationServices.CreateScope())
+	        {
+	            app.UseHangfireDashboard("/Hangfire", new DashboardOptions
+	            {
+	                Authorization = new[] { new HangfireAuthorizationFilter() },
+	                DashboardTitle = "Notification Hangfire Dashboard",
+	                TimeZoneResolver = new TimeZoneResolver()
+	            });
+	        }
+	
+	        app.UseEndpoints(endpoints =>
+	        {
+	            endpoints.MapControllers();
+	            endpoints.MapHangfireDashboard();
+	        });
+	
+	        return app;
+	    }
+	
+	    public class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
+	    {
+	        public bool Authorize(DashboardContext context)
+	        {
+	            try
+	            {
+	                var httpContext = context.GetHttpContext();
+	                // httpContext.User.Identity.Name
+	                var isAuthorized = httpContext.User.Identity.IsAuthenticated;
+	                //if (!isAuthorized)
+	                //{
+	                //    httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden; httpContext.Response.Redirect("/404");
+	                //    return false;
+	                //}
+	                return true;
+	            }
+	            catch (Exception ex)
+	            {
+	                return false;
+	            }
+	        }
+	    }
+	
+	    public class TimeZoneResolver : ITimeZoneResolver
+	    {
+	        public TimeZoneInfo GetTimeZoneById(string timeZoneId)
+	        {
+	            return TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+	        }
+	    }
+	}
