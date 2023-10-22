@@ -11,85 +11,104 @@ installation:
 	-builder.Services.AddHangfire(configuration);
 	-app.InitializeHangfire();
 -add/implement the hangfire config file in the .Api project:
-	public static class HangfireService
+	using Hangfire;
+	using Hangfire.SqlServer;
+	using Hangfire.Dashboard.BasicAuthorization;
+	
+	namespace Notification.Api.Configuration
 	{
-	    public static IServiceCollection AddHangfire(this IServiceCollection services, IConfiguration configuration)
+	    public static partial class HangfireService
 	    {
-	        // Add Hangfire services.
-	        var ConnectionString = configuration.GetConnectionString("HangfireConnection");
-	        services.AddHangfire(configuration => configuration
-	           .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-	           .UseSimpleAssemblyNameTypeSerializer()
-	           .UseRecommendedSerializerSettings()
-	           .UseSqlServerStorage(ConnectionString, new SqlServerStorageOptions
-	           {
-	               CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-	               SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-	               QueuePollInterval = TimeSpan.Zero,
-	               UseRecommendedIsolationLevel = true,
-	               DisableGlobalLocks = true,
-	               SchemaName = "Contact"
-	           }));
-	
-	        // Add the processing server as IHostedService
-	        services.AddHangfireServer(option =>
+	        public static IServiceCollection AddHangfire(this IServiceCollection services, IConfiguration configuration)
 	        {
-	            option.SchedulePollingInterval = TimeSpan.FromSeconds(4);
-	            option.TimeZoneResolver = new TimeZoneResolver(); // Use the customize TimeZoneInfo
-	        });
+	            // Add Hangfire services.
+	            var ConnectionString = configuration.GetConnectionString("HangfireConnection");
+	            services.AddHangfire(configuration => configuration
+	               .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+	               .UseSimpleAssemblyNameTypeSerializer()
+	               .UseRecommendedSerializerSettings()
+	               .UseSqlServerStorage(ConnectionString, new SqlServerStorageOptions
+	               {
+	                   CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+	                   SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+	                   QueuePollInterval = TimeSpan.Zero,
+	                   UseRecommendedIsolationLevel = true,
+	                   DisableGlobalLocks = true,
+	                   SchemaName = "Notification"
+	               }));
 	
-	        return services;
-	    }
-	
-	    public static IApplicationBuilder InitializeHangfire(this IApplicationBuilder app)
-	    {
-	        using (var scope = app.ApplicationServices.CreateScope())
-	        {
-	            app.UseHangfireDashboard("/Hangfire", new DashboardOptions
+	            // Add the processing server as IHostedService
+	            services.AddHangfireServer(option =>
 	            {
-	                Authorization = new[] { new HangfireAuthorizationFilter() },
-	                DashboardTitle = "Notification Hangfire Dashboard",
-	                TimeZoneResolver = new TimeZoneResolver()
+	                option.SchedulePollingInterval = TimeSpan.FromSeconds(4);
+	                option.TimeZoneResolver = new TimeZoneResolver(); // Use the customize TimeZoneInfo
 	            });
+	
+	            return services;
 	        }
 	
-	        app.UseEndpoints(endpoints =>
+	        public static IApplicationBuilder InitializeHangfire(this IApplicationBuilder app)
 	        {
-	            endpoints.MapControllers();
-	            endpoints.MapHangfireDashboard();
-	        });
-	
-	        return app;
-	    }
-	
-	    public class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
-	    {
-	        public bool Authorize(DashboardContext context)
-	        {
-	            try
+	            using (var scope = app.ApplicationServices.CreateScope())
 	            {
-	                var httpContext = context.GetHttpContext();
-	                // httpContext.User.Identity.Name
-	                var isAuthorized = httpContext.User.Identity.IsAuthenticated;
-	                //if (!isAuthorized)
-	                //{
-	                //    httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden; httpContext.Response.Redirect("/404");
-	                //    return false;
-	                //}
-	                return true;
+	                app.UseHangfireDashboard("/Hangfire", new DashboardOptions
+	                {
+	                    DashboardTitle = "Notification Hangfire Dashboard",
+	                    TimeZoneResolver = new TimeZoneResolver(),
+	                    Authorization = new[] {
+	                        new BasicAuthAuthorizationFilter(
+	                            new BasicAuthAuthorizationFilterOptions
+	                            {
+	                                RequireSsl = false,
+	                                SslRedirect = false,
+	                                LoginCaseSensitive = true,
+	                                Users = new []
+	                                {
+	                                    new BasicAuthAuthorizationUser
+	                                    {
+	                                        Login = "admin",
+	                                        PasswordClear =  "admin"
+	                                    }
+	                                }
+	                            }
+	                    ),
+	                        //TODO: DEVELOP THIS:
+	                        //new CustomHangfireAuthorizationFilter(
+	                        //    new BasicAuthAuthorizationFilterOptions
+	                        //    {
+	                        //        RequireSsl = false,
+	                        //        SslRedirect = false,
+	                        //        LoginCaseSensitive = true,
+	                        //        Users = new []
+	                        //        {
+	                        //            new BasicAuthAuthorizationUser
+	                        //            {
+	                        //                Login = "admin",
+	                        //                PasswordClear =  "test"
+	                        //            }
+	                        //        }
+	                        //    }
+	                        //),
+	                    }
+	                });
 	            }
-	            catch (Exception ex)
+	
+	            app.UseEndpoints(endpoints =>
 	            {
-	                return false;
-	            }
+	                endpoints.MapControllers();
+	                endpoints.MapHangfireDashboard();
+	            });
+	
+	            return app;
 	        }
-	    }
 	
-	    public class TimeZoneResolver : ITimeZoneResolver
-	    {
-	        public TimeZoneInfo GetTimeZoneById(string timeZoneId)
+	        public class TimeZoneResolver : ITimeZoneResolver
 	        {
-	            return TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+	            public TimeZoneInfo GetTimeZoneById(string timeZoneId)
+	            {
+	                return TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+	            }
 	        }
 	    }
 	}
+	
