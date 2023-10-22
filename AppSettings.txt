@@ -1,0 +1,21 @@
+track appsettings changes:
+	program.cs:
+		builder.Services.Configure<ProxySettings>(configuration.GetSection("Proxy"));
+		builder.Services.AddOptions();
+	handler:
+		-use "IOptionsMonitor<TheStuffYouWantModel>" (instead of using "IConfigurations")
+		-set ".OnChange()" in the constructor
+	example:
+		public class SendWhoIsCommand : IRequest<bool>
+    	{
+    	    public int LineId { get; set; }
+    	    public class Handler : IRequestHandler<SendWhoIsCommand, bool>
+    	    {
+    	        private ProxySettings Proxy;
+    	        public Handler(IOptionsMonitor<ProxySettings> configuration)
+    	        {
+    	            Proxy = configuration.CurrentValue;// configuration.GetSection("Proxy").Get<ProxySettings>();
+    	            configuration.OnChange((settings, name) => Proxy = settings);
+    	        }
+    	    }
+    	}
