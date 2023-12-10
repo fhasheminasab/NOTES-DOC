@@ -112,3 +112,6 @@ installation:
 	    }
 	}
 	
+//------------------------------------
+you can use this to create cron expressions from seconds or sth:
+	https://github.com/cwinland/Cron.Core
