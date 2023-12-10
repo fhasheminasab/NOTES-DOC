@@ -1,3 +1,7 @@
+to read:
+https://redis.io/docs/connect/clients/om-clients/stack-dotnet/
+"Steve Suehring - Redis for Dummies (2021).pdf"
+------------------------------------------------------
 C# setup:
 https://www.youtube.com/watch?v=UrQWii_kfIE
 
