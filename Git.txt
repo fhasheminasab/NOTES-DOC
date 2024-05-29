@@ -28,7 +28,10 @@ lost stash:
 $ git stash list
 $ gitk --all $( git fsck --no-reflog | awk '/dangling commit/ {print $3}' )
 -you can find the stash from ui
-$ git stash apply
+{
+ - $ git stash apply
+ - or right click on the intended stash and create a new branch on it
+}
 
 
 
