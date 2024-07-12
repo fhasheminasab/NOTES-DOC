@@ -1,3 +1,7 @@
-go clean -modcache
-go mod init main_or_whatever
-go mod tidy
+-all code must belong to a package
+every package needs a go.mod file:
+  -go clean -modcache
+  -go mod init main_or_whatever
+  -go mod tidy
+-your package needs to have a version:
+  -https://adrianhesketh.com/2016/09/04/adding-a-version-number-to-go-packages-with-go-generate/
