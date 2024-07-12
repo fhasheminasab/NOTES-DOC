@@ -5,3 +5,7 @@ every package needs a go.mod file:
   -go mod tidy
 -your package needs to have a version:
   -https://adrianhesketh.com/2016/09/04/adding-a-version-number-to-go-packages-with-go-generate/
+-check if it has a tag:
+  -git tag -l
+-go generate
+-go build
