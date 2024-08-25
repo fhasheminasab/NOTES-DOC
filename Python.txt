@@ -11,6 +11,13 @@ update package:
 -cmd in root folder:
 	python setup.py sdist bdist_wheel
 	twine upload dist/*
+	pypi-YOURAPIKEY
+---------------------------------------------
+on termux:
+	-pkg install rust
+	-pkg install wget
+	-wget -i https://rustup.rs (https://rustup.rs/)
+	-pkg install binutils
 ---------------------------------------------
 GHASEDACKPACKAGE:
 ----
