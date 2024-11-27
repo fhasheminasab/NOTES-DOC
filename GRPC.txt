@@ -280,3 +280,11 @@ if you're not sure whether or not the connection is up try using GrpcCurl.
 download it from github, extract where you want it installed, then copy the path and add it to EnvironmentVariables>path
 this command for instance ("IsServiceAccessible" is the name of your metrhod in the server file):
 grpcurl -plaintext localhost:5021 SmsRequestManagementProtoService/IsServiceAccessible
+
+or simply execute these command in powershell
+>> iwr -useb get.scoop.sh | iex
+>> scoop install grpcurl
+
+then call grpccurl like this
+>> grpcurl -plaintext -proto User.proto -d '{"Value": 1}' localhost:5005 UserProtoService.GetUser
+
